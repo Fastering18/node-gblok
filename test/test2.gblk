@@ -1,0 +1,23 @@
+fungsi piramid(tinggi,kebalik)
+    jika tinggi < 3 maka kembali "setidaknya tinggi harus lebih dari 2" tutup
+    kebalik = kebalik atau salah;
+    lokal hasil = ""
+    untuk i = 0 ke tinggi lakukan
+        jika (i == 0 dan kebalik) maka 
+            hasil = hasil + ("* " * (tinggi - i)) + "\n"; 
+            lanjutkan;
+        tutup;
+        hasil = hasil + (" " * (kebalik dan i atau (tinggi - i))) + ("* " * (kebalik dan (tinggi - i) atau i)) + "\n"
+    tutup
+    kembali hasil
+tutup
+
+print(piramid(10) + piramid(10, benar))
+
+
+lokal arr = []
+arr[0] = fungsi anjay() -> "menggigil"
+
+print(arr)
+print((arr[0])())
+print(([1,2])[1] = 2)
