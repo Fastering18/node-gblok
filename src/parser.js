@@ -20,7 +20,8 @@ const {
     NodePanggil,
     NodeReturn,
     NodeLanjutkan,
-    NodeBerhenti
+    NodeBerhenti,
+    NodeTernary
 } = require("../lib/nodes");
 const {
     TokenInteger,
@@ -49,7 +50,10 @@ const {
     TokenPanah,
     TokenLineBaru,
     TokenEOF,
-    Konstruktor
+    Konstruktor,
+    TokenTernary,
+    TokenTernaryBagi,
+    TokenTitikIndeks
 } = require("../lib/enums");
 const { SintaksSalah } = require("../lib/errors");
 const { HasilParse } = require("../lib/HasilParse");
@@ -86,7 +90,7 @@ class Parser {
                 new SintaksSalah(
                     this.tokenSkrg.posisi_awal,
                     this.tokenSkrg.posisi_akhir,
-                    "Harus berupa sintaks '+', '-', '*', '/', '^', '%'",
+                    "Akhir input yang tidak terduga", //Harus berupa sintaks '+', '-', '*', '/', '^', '%'
                 )
             )
         }
@@ -164,7 +168,7 @@ class Parser {
         var expr = res.daftar(this.expr())
         if (res.error)
             return res.gagal(
-                new SintaksSalah(
+                res.error || new SintaksSalah(
                     this.tokenSkrg.posisi_awal,
                     this.tokenSkrg.posisi_akhir,
                     res.error.details
@@ -221,7 +225,7 @@ class Parser {
 
         if (res.error)
             return res.gagal(
-                new SintaksSalah(
+                res.error || new SintaksSalah(
                     this.tokenSkrg.posisi_awal,
                     this.tokenSkrg.posisi_akhir,
                     res.error.details
@@ -245,6 +249,7 @@ class Parser {
             var operator_token = this.tokenSkrg
             hasil.daftar_kemajuan()
             this.maju()
+            //console.log(fungsiB,operator_token)
             var kanan = hasil.daftar(this[fungsiB]())
             if (hasil.error) return hasil
             kiri = new NodeOperasiBinary(kiri, operator_token, kanan)
@@ -314,7 +319,7 @@ class Parser {
     }
 
     power() {
-        return this.binary_operator("panggilAtoIndeks", [TokenPangkat], this.faktor)
+        return this.binary_operator("panggilAtoIndeks", [TokenPangkat], ["faktor"])
     }
 
     panggilAtoIndeks() {
@@ -386,6 +391,46 @@ class Parser {
                 return res.berhasil(new NodeIndeks(atom, expr, isiBaru))
             }
             return res.berhasil(new NodeIndeks(atom, expr))
+        } else if (this.tokenSkrg.tipe == TokenTitikIndeks) {
+            res.daftar_kemajuan()
+            this.maju()
+
+            if (this.tokenSkrg.tipe != TokenIdentifier) return res.gagal(new SintaksSalah(
+                this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+                `Dibutuhkan nama properti untuk indeks (setelah titik)`
+            ));
+            var indeks = new NodeString(this.tokenSkrg);
+
+            res.daftar_kemajuan()
+            this.maju()
+
+            if (this.tokenSkrg.tipe == TokenSama) {
+                res.daftar_kemajuan()
+                this.maju()
+                var isiBaru = res.daftar(this.expr())
+                if (res.error) return res
+                return res.berhasil(new NodeIndeks(atom, indeks, isiBaru))
+            }
+            return res.berhasil(new NodeIndeks(atom, indeks))
+        } else if (this.tokenSkrg.tipe == TokenTernary) {
+            res.daftar_kemajuan()
+            this.maju()
+
+            var pilihanPertama = res.daftar(this.expr()); 
+            if (res.error) return res;
+
+            if (this.tokenSkrg.tipe != TokenTernaryBagi) return res.gagal(new SintaksSalah(
+                this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+                `Dibutuhkan ':' untuk pilihan kedua ternary operator`
+            ));
+
+            res.daftar_kemajuan()
+            this.maju()
+
+            var pilihanKedua = res.daftar(this.expr()) 
+            if (res.error) return res;
+
+            return res.berhasil(new NodeTernary(atom, pilihanPertama, pilihanKedua))
         }
         return res.berhasil(atom)
     }

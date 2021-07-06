@@ -1,0 +1,7 @@
+lokal m = 0
+lokal s = selama m < 10 lakukan m=m+1
+
+print(s)
+
+lokal e = "as"
+print(((e.besar)() == "AS") ? "sos" : "asus")

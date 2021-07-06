@@ -28,8 +28,8 @@ const {
     TokenKoma,
     TokenPanah,
     TokenLineBaru,
-    TokenKotakIndeksKiri,
-    TokenKotakIndeksKanan,
+    TokenTernary,
+    TokenTernaryBagi,
     TokenTitikIndeks,
     TokenEOF,
     Konstruktor
@@ -121,14 +121,19 @@ class Lexer {
             } else if (this.karakterSkrg == ",") {
                 tokens.push(new Token(TokenKoma, null, this.posisi))
                 this.maju()
-            /*} else if (this.karakterSkrg == ".") {
+            } else if (this.karakterSkrg == ".") {
                 tokens.push(new Token(TokenTitikIndeks, null, this.posisi))
-                this.maju()*/
+                this.maju()
+            } else if (this.karakterSkrg == "?") {
+                tokens.push(new Token(TokenTernary, null, this.posisi))
+                this.maju()
+            } else if (this.karakterSkrg == ":") {
+                tokens.push(new Token(TokenTernaryBagi, null, this.posisi))
+                this.maju()
             } else {
                 var posisi_awal = this.posisi.salin()
                 var karakter = this.karakterSkrg
                 this.maju()
-                console.log(karakter)
                 return {hasil: null, err: new KarakterSalah(posisi_awal, this.posisi, '"' + karakter + '"')}
             }
         }
