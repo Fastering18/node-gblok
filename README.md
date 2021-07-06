@@ -8,6 +8,10 @@ executeSync("print('hello world')", "program.gblk")
 ### Changed keyword in `0.0.265`  
 > **untuk ... maka** changed to **untuk ... lakukan**  `(for loop)`  
 > **saat ... maka** changed to **selama ... lakukan**  `(while loop)`  
+
+### New dot notation, string method and ternary operator \[BETA\] `0.0.27`  
+> lokal str = "abcd"  
+> print((str.besar)())  
   
 ### API  
 | Functions      | Description |

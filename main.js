@@ -9,6 +9,7 @@ const path = require("path")
 var global_tabel_simbol = new TabelSimbol()
 global_tabel_simbol.tulis("salah", TipeData.BooLean.salah)
 global_tabel_simbol.tulis("benar", TipeData.BooLean.benar)
+global_tabel_simbol.tulis("nil", TipeData.Angka.nil)
 global_tabel_simbol.tulis("print", TipeData.BuiltInFungsi.tulis)
 
 function terminal(shell) {
@@ -95,10 +96,10 @@ async function buatFile(path, konten) {
     return terminal(`echo ${konten} > ${path}`)
 }
 
-function runTerminal(script, path="./index.gblk") {
+function runTerminal(script, path="./index.gblk", opt={}) {
     return new Promise((trima, tolak) => {
     buatFile(path, script).then(() => {
-        terminal(`gblok run ${path} --tanpa waktu`).then(out => {
+        terminal(`gblok run ${path} ${opt.waktu == false ? "" : "--tanpa waktu"}`).then(out => {
             terminal(`rm ${path}`);
             return trima(out)
         }).catch(tolak)
