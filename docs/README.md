@@ -53,3 +53,35 @@ An example to run our latest index.gblk using options:
 ```bash
 gblok run index.gblk --tanpa waktu
 ```
+
+## More examples  
+Learn more gblk code using if statements, looping, and more!  
+
+#### Using if statements  
+following code will use basic if statement in gblk  
+```gblk
+--[[
+--   Boolean
+--   benar = true
+--   salah = false
+]]
+
+lokal iyakah = benar
+
+jika iyakah maka
+   print("benar")
+tutup
+```  
+
+Experimenting with `else`, `else if` cases  
+```gblk 
+lokal answer = 10 * 10
+
+jika answer == 1000 maka
+    print("jawabannya adalah 1000")
+kalau answer == 100 maka
+    print("jawabannya adalah 100")
+jikatidak
+    print("tidak menemukan jawaban ¯\_(ツ)_/¯")
+tutup
+```
