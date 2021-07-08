@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+</head>
+
+<body>
+  <div data-app id="main">Please wait...</div>
+  <script>
+    window.$docsify = {
+      el: '#main',
+      name: '',
+      repo: ''
+    }
+  </script>
+  <!-- Docsify v4 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script>
+      (function (Prism) {
+        var string = /(?:"(?:\\(?:\r\n|[\s\S])|[^"\\\r\n])*"|'(?:\\(?:\r\n|[\s\S])|[^'\\\r\n])*')/;
+
+        Prism.languages.gblk = {
+          'comment': /\-\-\[\[[\s\S]\]\]/,
+          'atrule': {
+            pattern: /@[\w-](?:[^;{\s]|\s+(?![\s{]))*(?:;|(?=\s*\{))/,
+            inside: {
+              'rule': /^@[\w-]+/,
+              'selector-function-argument': {
+                pattern: /(\bselector\s*\(\s*(?![\s)]))(?:[^()\s]|\s+(?![\s)])|\((?:[^()]|\([^()]*\))*\))+(?=\s*\))/,
+                lookbehind: true,
+                alias: 'selector'
+              },
+              'keyword': {
+                pattern: /(^|[^\w-])(?:lokal|benar|salah|nil|dan|atau|jika|maka|kalau|jikatidak|tutup|untuk|ke|langkah|lakukan|selama|fungsi|kembali)(?![\w-])/,
+                lookbehind: true
+              }
+              // See rest below
+            }
+          },
+          'selector': {
+            pattern: RegExp('(^|[{}\\s])[^{}\\s](?:[^{};"\'\\s]|\\s+(?![\\s{])|' + string.source + ')*(?=\\s*\\{)'),
+            lookbehind: true
+          },
+          'string': {
+            pattern: string,
+            greedy: true
+          },
+          'function': {
+            pattern: /(^|[^-a-z0-9])[-a-z0-9]+(?=\()/i,
+            lookbehind: true
+          },
+          'punctuation': /[();:,]/
+        };
+
+      }(Prism));
+  </script>
+</body>
+
+</html>
