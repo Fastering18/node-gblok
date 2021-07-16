@@ -1,7 +1,16 @@
-lokal m = 0
-lokal s = selama m < 10 lakukan m=m+1
+lokal xor = fungsi(n) -> n*-1-1
 
-print(s)
+print(xor.amogos)
+tunggu(2)
+print(xor(-3)==~-3)
 
-lokal e = "as"
-print(((e.besar)() == "AS") ? "sos" : "asus")
+lokal str = "got em"  
+lokal res = eval("str") --return the str
+print(res)
+
+jika ("") maka
+    print("sus") 
+tutup
+
+print(tipe salah)
+print((tipe(1 + 2) == "Angka") ? "sus" : "not sus")

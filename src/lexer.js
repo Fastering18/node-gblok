@@ -32,7 +32,8 @@ const {
     TokenTernaryBagi,
     TokenTitikIndeks,
     TokenEOF,
-    Konstruktor
+    Konstruktor,
+    TokenXOR
 } = require("../lib/enums")
 
 const { KarakterSalah, KarakterYangDibutuhkan } = require("../lib/errors");
@@ -84,6 +85,9 @@ class Lexer {
                 } else if (minusorpanah.error) {
                     return {hasil: null, err: minusorpanah.error}
                 }
+            } else if (this.karakterSkrg == "~") {
+                tokens.push(new Token(TokenXOR, null, this.posisi))
+                this.maju()
             } else if (this.karakterSkrg == "*") {
                 tokens.push(new Token(TokenKali, null, this.posisi))
                 this.maju()
@@ -301,10 +305,11 @@ class Lexer {
 					)}
                 }
             }
+            this.maju()
         } else {
-			while (this.karakterSkrg != '\n' && this.karakterSkrg) this.maju();
+			while (this.karakterSkrg !== '\n' && this.karakterSkrg) this.maju();
         }
-		this.maju()
+		
         return {token: null, error: null}
     }
 }

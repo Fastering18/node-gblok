@@ -53,7 +53,8 @@ const {
     Konstruktor,
     TokenTernary,
     TokenTernaryBagi,
-    TokenTitikIndeks
+    TokenTitikIndeks,
+    TokenXOR
 } = require("../lib/enums");
 const { SintaksSalah } = require("../lib/errors");
 const { HasilParse } = require("../lib/HasilParse");
@@ -253,6 +254,7 @@ class Parser {
             var kanan = hasil.daftar(this[fungsiB]())
             if (hasil.error) return hasil
             kiri = new NodeOperasiBinary(kiri, operator_token, kanan)
+            //console.log(operator_token.tipe)
         }
         return hasil.berhasil(kiri)
     }
@@ -308,11 +310,27 @@ class Parser {
         var res = new HasilParse()
         var tokenskrg = this.tokenSkrg
 
-        if (([TokenTambah, TokenKurang]).includes(tokenskrg.tipe)) {
+        if (([TokenTambah, TokenKurang, TokenXOR]).includes(tokenskrg.tipe)) {
             res.daftar_kemajuan()
             this.maju()
             var faktor = res.daftar(this.faktor())
             if (res.error) return res
+            return res.berhasil(new NodeOperatorMinus(tokenskrg, faktor))
+        } else if (tokenskrg.tipe == TokenTitikIndeks) {
+            res.daftar_kemajuan()
+            this.maju()
+            var faktor = res.daftar(this.faktor())
+            if (res.error) return res;
+            if (!faktor) return res.gagal(new SintaksSalah(tokenskrg.posisi_awal, this.tokenSkrg.posisi_akhir, "Akhir input yang tidak terduga"));
+
+            return res.berhasil(new NodeOperatorMinus(tokenskrg, faktor))
+        } else if (tokenskrg.sama_dengan(TokenKeyword, "tipe")) {
+            res.daftar_kemajuan()
+            this.maju()
+            var faktor = res.daftar(this.faktor())
+            if (res.error) return res;
+            if (!faktor) return res.gagal(new SintaksSalah(tokenskrg.posisi_awal, this.tokenSkrg.posisi_akhir, "`tipe` keyword harus disertai data"));
+
             return res.berhasil(new NodeOperatorMinus(tokenskrg, faktor))
         }
         return this.power()
@@ -338,13 +356,7 @@ class Parser {
             } else {
                 node_parameter.push(res.daftar(this.expr()))
                 if (res.error)
-                    return res.gagal(
-                        new SintaksSalah(
-                            this.tokenSkrg.posisi_awal,
-                            this.tokenSkrg.posisi_akhir,
-                            res.error.details || "Dibutuhkan ')', 'lokal', 'jika', 'untuk', 'selama', 'fungsi', int, float, pengenal variabel, '+', '-', '(' atau 'bukan'",
-                        )
-                    )
+                    return res;
 
                 while (this.tokenSkrg.tipe == TokenKoma) {
                     res.daftar_kemajuan()
@@ -411,7 +423,7 @@ class Parser {
                 if (res.error) return res
                 return res.berhasil(new NodeIndeks(atom, indeks, isiBaru))
             }
-            return res.berhasil(new NodeIndeks(atom, indeks))
+            return res.berhasil(new NodeIndeks(atom, indeks)) 
         } else if (this.tokenSkrg.tipe == TokenTernary) {
             res.daftar_kemajuan()
             this.maju()
@@ -499,13 +511,15 @@ class Parser {
             if (res.error) return res
             return res.berhasil(fungsi)
         }
+        //console.log(this.tokenSkrg.tipe)
         if (this.tokenSkrg.sama_dengan("EOF")) return res.berhasil(null);
 
+        
         return res.gagal(
             new SintaksSalah(
                 tokenskrg.posisi_awal,
                 tokenskrg.posisi_akhir,
-                "Harus memiliki int, float, lokal, '+', '-' atau parentesis",
+                "Akhir input yang tidak terduga",
             )
         )
     }
@@ -533,13 +547,7 @@ class Parser {
         } else {
             isi_elemen.push(res.daftar(this.expr()))
             if (res.error)
-                return res.gagal(
-                    new SintaksSalah(
-                        this.tokenSkrg.posisi_awal,
-                        this.tokenSkrg.posisi_akhir,
-                        res.error.details || "Dibutuhkan ')', 'lokal', 'jika', 'untuk', 'selama', 'fungsi', int, float, pengenal variabel, '+', '-', '(' atau 'bukan'",
-                    )
-                )
+                return res
 
             while (this.tokenSkrg.tipe == TokenKoma) {
                 res.daftar_kemajuan()

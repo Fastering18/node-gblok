@@ -43,10 +43,14 @@ const {
     TokenPanah,
     TokenLineBaru,
     TokenEOF,
-    Konstruktor
+    Konstruktor,
+    TokenXOR,
+    TokenTitikIndeks
 } = require("../lib/enums");
 const { RTError } = require("../lib/errors")
 
+const {Lexer} = require("./lexer")
+const {Parser} = require("./parser")
 
 class Interpreter {
     kunjungi(node, konteks) {
@@ -167,7 +171,7 @@ class Interpreter {
             return res.berhasil(isiBaru || Angka.nil)
         } else {
             var idx = kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai
-            var isiData = (isi_untuk_diindeks.metode["metode_"+idx] || isi_untuk_diindeks.nilai[idx]);
+            var isiData = (isi_untuk_diindeks.metode["metode_"+idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
             return res.berhasil(isiData || Angka.nil)
         }
     }
@@ -269,6 +273,8 @@ class Interpreter {
             var { hasil, err } = kiri.atau_oleh(kanan)
             jawaban = hasil;
             error = err;
+        } else {
+            //console.log(node.operator_token)
         }
         
         if (error) {
@@ -288,13 +294,31 @@ class Interpreter {
         var error;
 
         if (node.operator_token.tipe == TokenKurang) {
-            var newangka = angka.kali_oleh(new Angka(-1))
+            if (angka.constructor.name == "Angka") {
+                var newangka = angka.kali_oleh(new Angka(-1))
+                error = newangka.err;
+                angka = newangka.hasil;
+            } else {
+                angka = Angka.nil.atur_konteks(konteks)
+            }
+        } else if (node.operator_token.tipe == TokenXOR) {
+            var newangka = angka.XOR()
             error = newangka.err;
             angka = newangka.hasil;
+        } else if (node.operator_token.tipe == TokenTitikIndeks) {
+            if (angka.constructor.name == "Angka") {
+                var newangka = angka.jadi_koma()
+                error = newangka.err;
+                angka = newangka.hasil;
+            } else {
+                //console.log(angka)
+            }
         } else if (node.operator_token.sama_dengan(TokenKeyword, "bukan")) {
             var newangka = angka.bukan()
             error = newangka.err;
             angka = newangka.hasil;
+        } else if (node.operator_token.sama_dengan(TokenKeyword, "tipe")) {
+            angka = new Str(angka.tipe || angka.constructor.name)
         }
 
         if (error) {
@@ -309,7 +333,7 @@ class Interpreter {
     kunjungi_NodeTernary(node, konteks) {
         var hasil = new HasilRuntime()
         var kondisi = hasil.daftar(this.kunjungi(node.kondisi, konteks))
-        if (hasil.harus_return()) return res;
+        if (hasil.harus_return()) return hasil;
         var data;
         
         if (kondisi.apakah_benar()) {
@@ -450,7 +474,7 @@ class Interpreter {
             `${node.node_untuk_panggil.nama_token_variabel ? node.node_untuk_panggil.nama_token_variabel.value : "Nilai tengah (...)()"} bukan sebuah fungsi`,
             konteks,
         ))
-		var hasil = res.daftar(isi_untuk_dipanggil.esekusi(parameters, Interpreter))
+		var hasil = res.daftar(isi_untuk_dipanggil.esekusi(parameters, {Interpreter, Lexer, Parser, konteks}))
 		if (res.harus_return()) return res;
 		hasil = hasil.salin().atur_posisi(node.posisi_awal, node.posisi_akhir).atur_konteks(konteks)	
 		return res.berhasil(hasil)

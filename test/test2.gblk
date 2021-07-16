@@ -7,7 +7,7 @@ fungsi piramid(tinggi,kebalik)
             hasil = hasil + ("* " * (tinggi - i)) + "\n"; 
             lanjutkan;
         tutup;
-        hasil = hasil + (" " * (kebalik dan i atau (tinggi - i))) + ("* " * (kebalik dan (tinggi - i) atau i)) + "\n"
+        hasil = hasil + (" " * (kebalik ? i : (tinggi - i))) + ("* " * (kebalik ? (tinggi - i) : i)) + "\n"
     tutup
     kembali hasil
 tutup
@@ -23,6 +23,6 @@ print((arr[0])())
 print(([1,2])[1] = 2)
 
 lokal m = "sos"
---print(m)
+print((m.besar)())
 
---print(salah ? "sos" : salah ? "amogos" : "fully salah")
+print(salah ? "sos" : salah ? "amogos" : "fully salah")
