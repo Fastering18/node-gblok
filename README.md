@@ -12,6 +12,11 @@ executeSync("print('hello world')", "program.gblk")
 ### New dot notation, string method and ternary operator \[BETA\] `0.0.27`  
 > lokal str = "abcd"  
 > print((str.besar)())  
+
+### eval function \[BETA\] `0.0.273`  
+> lokal str = "got em"  
+> lokal res = eval("str") --return the str   value  
+> print(res)  
   
 ### API  
 | Functions      | Description |
