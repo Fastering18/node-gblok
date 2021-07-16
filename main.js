@@ -11,6 +11,8 @@ global_tabel_simbol.tulis("salah", TipeData.BooLean.salah)
 global_tabel_simbol.tulis("benar", TipeData.BooLean.benar)
 global_tabel_simbol.tulis("nil", TipeData.Angka.nil)
 global_tabel_simbol.tulis("print", TipeData.BuiltInFungsi.tulis)
+global_tabel_simbol.tulis("tunggu", TipeData.BuiltInFungsi.tunggu)
+global_tabel_simbol.tulis("eval", TipeData.BuiltInFungsi.eval)
 
 function terminal(shell) {
     return new Promise((trima) => {
