@@ -1,0 +1,24 @@
+lokal eksponensial = fungsi(a, n) 
+    jika n <= 0 maka
+        kembali 1;
+    jikatidak
+        kembali a * eksponensial(a, n-1);
+    tutup
+tutup
+
+print(eksponensial(10, 5))
+
+fungsi piramid(r)
+    jika r < 3 maka kembali "setidaknya row harus lebih dari 2" tutup
+    lokal hasil = ""
+    untuk i = 0 ke r lakukan
+        hasil = hasil + (" " * (r - i)) + ("* " * (i)) + "\n"
+    tutup
+    kembali hasil
+tutup
+
+print(piramid(20))
+
+
+print(["sussy baka"][1])
+print(([["m"]][1])[1])

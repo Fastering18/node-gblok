@@ -2,6 +2,7 @@
 const prog = require('caporal');
 const warna = require("./warna");
 const compiler = require("../main");
+const utility = require("./utility")
 
 prog
   .name("gblok cmd")
@@ -19,6 +20,15 @@ prog
     }).finally((_) => {
         if (!options.tanpa.includes("waktu")) console.log(warna.Bold(`\tScript telah mengabiskan waktu: ${new Date(new Date() - mulai).getMilliseconds()}ms`))
     })
+  })
+  .command('init', 'Create example file')
+  .argument('[filename]', 'File name to be written', prog.STRING)
+  .action(function(args) {
+    if (args.filename) {
+      utility.putExampleFile(args.filename.endsWith(".gblk") ? args.filename : args.filename + ".gblk")
+    } else {
+      utility.putExampleFile("index.gblk")
+    }
   })
 
 
