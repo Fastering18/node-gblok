@@ -13,11 +13,20 @@ executeSync("print('hello world')", "program.gblk")
 > lokal str = "abcd"  
 > print((str.besar)())  
 
-### eval function \[BETA\] `0.0.273`  
+### Added eval function \[BETA\] `0.0.273`  
 > lokal str = "got em"  
 > lokal res = eval("str") --return the str   value  
 > print(res)  
-  
+
+### Added try catch block \[BETA\] `0.0.276`  
+```gblk
+coba
+    print(sos)
+tangkap(err)
+    print(err)
+tutup
+```  
+
 ### API  
 | Functions      | Description |
 | ----------- | ----------- |
