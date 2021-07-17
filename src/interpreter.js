@@ -49,8 +49,9 @@ const {
 } = require("../lib/enums");
 const { RTError } = require("../lib/errors")
 
-const {Lexer} = require("./lexer")
-const {Parser} = require("./parser")
+const { Lexer } = require("./lexer")
+const { Parser } = require("./parser");
+const { NodeString } = require("../lib/nodes");
 
 class Interpreter {
     kunjungi(node, konteks) {
@@ -148,16 +149,16 @@ class Interpreter {
     kunjungi_NodeIndeks(node, konteks) {
         var res = new HasilRuntime();
         var isi_untuk_diindeks = res.daftar(
-			this.kunjungi(node.node_untuk_indeks, konteks)
-		)
-		if (res.harus_return()) return res;
-		isi_untuk_diindeks = isi_untuk_diindeks.salin().atur_posisi(
-			node.posisi_awal, node.posisi_akhir
-		)
+            this.kunjungi(node.node_untuk_indeks, konteks)
+        )
+        if (res.harus_return()) return res;
+        isi_untuk_diindeks = isi_untuk_diindeks.salin().atur_posisi(
+            node.posisi_awal, node.posisi_akhir
+        )
 
         var kunciIndeks = res.daftar(this.kunjungi(node.indeks, konteks))
         if (res.harus_return()) return res;
-        
+
         if (node.editIndeks) {
             if (isi_untuk_diindeks.constructor.name != "Daftar") return res.gagal(new RTError(
                 node.posisi_awal,
@@ -166,12 +167,12 @@ class Interpreter {
                 konteks,
             ))
 
-            var isiBaru =  res.daftar(this.kunjungi(node.editIndeks, konteks))
+            var isiBaru = res.daftar(this.kunjungi(node.editIndeks, konteks))
             isi_untuk_diindeks.nilai[kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai] = isiBaru;
             return res.berhasil(isiBaru || Angka.nil)
         } else {
             var idx = kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai
-            var isiData = (isi_untuk_diindeks.metode["metode_"+idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
+            var isiData = (isi_untuk_diindeks.metode["metode_" + idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
             return res.berhasil(isiData || Angka.nil)
         }
     }
@@ -276,7 +277,7 @@ class Interpreter {
         } else {
             //console.log(node.operator_token)
         }
-        
+
         if (error) {
             return res.gagal(error)
         } else {
@@ -335,7 +336,7 @@ class Interpreter {
         var kondisi = hasil.daftar(this.kunjungi(node.kondisi, konteks))
         if (hasil.harus_return()) return hasil;
         var data;
-        
+
         if (kondisi.apakah_benar()) {
             data = hasil.daftar(this.kunjungi(node.pilihan_satu, konteks))
             if (hasil.harus_return()) return res;
@@ -354,7 +355,7 @@ class Interpreter {
             var [kondisi, expr, harus_return_null] = node.cases[i];
             var kondisi_value = res.daftar(this.kunjungi(kondisi, konteks))
             if (res.harus_return()) return res;
-            
+
             if (kondisi_value.apakah_benar()) {
                 var isi_expr = res.daftar(this.kunjungi(expr, konteks))
                 if (res.harus_return()) return res;
@@ -373,134 +374,147 @@ class Interpreter {
     }
 
     kunjungi_NodeFor(node, konteks) {
-		var res = new HasilRuntime()
-		var isi = []
+        var res = new HasilRuntime()
+        var isi = []
         var step_value = new Angka(1)
 
-		var isi_awal = res.daftar(this.kunjungi(node.node_mulai_nilai, konteks))
-		if (res.harus_return()) return res;
+        var isi_awal = res.daftar(this.kunjungi(node.node_mulai_nilai, konteks))
+        if (res.harus_return()) return res;
 
-		var isi_akhir = res.daftar(this.kunjungi(node.node_akhir_nilai, konteks))
-		if (res.harus_return()) return res;
+        var isi_akhir = res.daftar(this.kunjungi(node.node_akhir_nilai, konteks))
+        if (res.harus_return()) return res;
 
-		if (node.node_step_nilai) {
-			step_value = res.daftar(this.kunjungi(node.node_step_nilai, konteks))
-			if (res.harus_return()) return res;
+        if (node.node_step_nilai) {
+            step_value = res.daftar(this.kunjungi(node.node_step_nilai, konteks))
+            if (res.harus_return()) return res;
         }
 
-		var i = isi_awal.nilai
+        var i = isi_awal.nilai
         var kondisi;
 
-		if (step_value.nilai >= 0) {
-			kondisi = () => i < isi_akhir.nilai
+        if (step_value.nilai >= 0) {
+            kondisi = () => i < isi_akhir.nilai
         } else {
-			kondisi = () => i > isi_akhir.nilai
+            kondisi = () => i > isi_akhir.nilai
         }
 
-		while (kondisi()) {
-			konteks.TabelSimbol.tulis(node.nama_token_variabel.value, new Angka(i))
-			i += step_value.nilai
+        while (kondisi()) {
+            konteks.TabelSimbol.tulis(node.nama_token_variabel.value, new Angka(i))
+            i += step_value.nilai
 
-			var isinode = res.daftar(this.kunjungi(node.isi_node, konteks))
-			if (res.harus_return() && res.loop_lanjutkan == false && res.loop_break == false) return res;
+            var isinode = res.daftar(this.kunjungi(node.isi_node, konteks))
+            if (res.harus_return() && res.loop_lanjutkan == false && res.loop_break == false) return res;
 
-			if (res.loop_lanjutkan) continue;
+            if (res.loop_lanjutkan) continue;
 
-			if (res.loop_break) break;
+            if (res.loop_break) break;
 
-			isi.push(isinode)
+            isi.push(isinode)
         }
 
-		return res.berhasil(node.harus_return_null ? Angka.nil : new Daftar(isi).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir))
+        return res.berhasil(node.harus_return_null ? Angka.nil : new Daftar(isi).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir))
     }
 
     kunjungi_NodeWhile(node, konteks) {
-		var res = new HasilRuntime()
-		var isi = []
+        var res = new HasilRuntime()
+        var isi = []
 
-		while (true) {
-			var kondisi = res.daftar(this.kunjungi(node.kondisi, konteks))
-			if (res.harus_return()) return res;
+        while (true) {
+            var kondisi = res.daftar(this.kunjungi(node.kondisi, konteks))
+            if (res.harus_return()) return res;
 
-			if (!kondisi.apakah_benar() && res.loop_lanjutkan == false && res.loop_break == false) break;
+            if (!kondisi.apakah_benar() && res.loop_lanjutkan == false && res.loop_break == false) break;
 
-			var isinode = res.daftar(this.kunjungi(node.isi_node, konteks))
-			if (res.harus_return()) return res;
+            var isinode = res.daftar(this.kunjungi(node.isi_node, konteks))
+            if (res.harus_return()) return res;
 
-			if (res.loop_lanjutkan) continue;
+            if (res.loop_lanjutkan) continue;
 
-			if (res.loop_break) break;
+            if (res.loop_break) break;
 
-			isi.push(isinode)
+            isi.push(isinode)
         }
 
-		return res.berhasil(node.harus_return_null ? Angka.nil : new Daftar(isi).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir))
+        return res.berhasil(node.harus_return_null ? Angka.nil : new Daftar(isi).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir))
     }
 
 
     kunjungi_NodeBuatFungsi(node, konteks) {
-		var res = new HasilRuntime()
+        var res = new HasilRuntime()
 
-		var nama_fungsi = node.nama_token_variabel ? node.nama_token_variabel.value : null;
-		var isi_node = node.isi_node
-		var nama_parameter = node.nama_parameter_token.map(m=>m.value)
-		var isi_fungsi = new Fungsi(nama_fungsi, isi_node, nama_parameter, node.harus_return_null).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir)
+        var nama_fungsi = node.nama_token_variabel ? node.nama_token_variabel.value : null;
+        var isi_node = node.isi_node
+        var nama_parameter = node.nama_parameter_token.map(m => m.value)
+        var isi_fungsi = new Fungsi(nama_fungsi, isi_node, nama_parameter, node.harus_return_null).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir)
 
-		if (node.nama_token_variabel) konteks.TabelSimbol.tulis(nama_fungsi, isi_fungsi)
+        if (node.nama_token_variabel) konteks.TabelSimbol.tulis(nama_fungsi, isi_fungsi)
 
-		return res.berhasil(isi_fungsi)
+        return res.berhasil(isi_fungsi)
     }
 
     kunjungi_NodePanggil(node, konteks) {
-		var res = new HasilRuntime()
-		var parameters = []
+        var res = new HasilRuntime()
+        var parameters = []
 
-		var isi_untuk_dipanggil = res.daftar(
-			this.kunjungi(node.node_untuk_panggil, konteks)
-		)
-		if (res.harus_return()) return res;
-		isi_untuk_dipanggil = isi_untuk_dipanggil.salin().atur_posisi(
-			node.posisi_awal, node.posisi_akhir
-		)
+        var isi_untuk_dipanggil = res.daftar(
+            this.kunjungi(node.node_untuk_panggil, konteks)
+        )
+        if (res.harus_return()) return res;
+        isi_untuk_dipanggil = isi_untuk_dipanggil.salin().atur_posisi(
+            node.posisi_awal, node.posisi_akhir
+        )
 
-		for (var i=0; i < node.node_parameter.length; i++) {
-			parameters.push(res.daftar(this.kunjungi(node.node_parameter[i], konteks)))
-			if (res.harus_return()) return res;
+        for (var i = 0; i < node.node_parameter.length; i++) {
+            parameters.push(res.daftar(this.kunjungi(node.node_parameter[i], konteks)))
+            if (res.harus_return()) return res;
         }
-        
-        if (!(["BuiltInFungsi","Fungsi","BuiltInMetode"].includes(isi_untuk_dipanggil.constructor.name))) return res.gagal(new RTError(
+
+        if (!(["BuiltInFungsi", "Fungsi", "BuiltInMetode"].includes(isi_untuk_dipanggil.constructor.name))) return res.gagal(new RTError(
             node.posisi_awal,
             node.posisi_akhir,
             `${node.node_untuk_panggil.nama_token_variabel ? node.node_untuk_panggil.nama_token_variabel.value : "Nilai tengah (...)()"} bukan sebuah fungsi`,
             konteks,
         ))
-		var hasil = res.daftar(isi_untuk_dipanggil.esekusi(parameters, {Interpreter, Lexer, Parser, konteks}))
-		if (res.harus_return()) return res;
-		hasil = hasil.salin().atur_posisi(node.posisi_awal, node.posisi_akhir).atur_konteks(konteks)	
-		return res.berhasil(hasil)
+        var hasil = res.daftar(isi_untuk_dipanggil.esekusi(parameters, { Interpreter, Lexer, Parser, konteks }))
+        if (res.harus_return()) return res;
+        hasil = hasil.salin().atur_posisi(node.posisi_awal, node.posisi_akhir).atur_konteks(konteks)
+        return res.berhasil(hasil)
+    }
+
+    kunjungi_NodeCoba(node, konteks) {
+        var res = new HasilRuntime()
+        var dicoba = res.daftar(this.kunjungi(node.yg_di_coba, konteks))
+        var error_cb = new Fungsi("<tangkap>", node.error_callback, node.nama_var_error ? [node.nama_var_error.value] : []).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir);
+
+        if (res.error) {
+            res.daftar(error_cb.esekusi([new Str(`${res.error.nama_error}: ${res.error.details}`)], { Interpreter, Lexer, Parser, konteks }));
+            if (res.harus_return()) return res;
+        }
+
+        return res.berhasil(Angka.nil);
     }
 
     kunjungi_NodeReturn(node, konteks) {
-		var res = new HasilRuntime()
+        var res = new HasilRuntime()
         var isi = Angka.nil
 
-		if (node.node_untuk_return) {
-			isi = res.daftar(this.kunjungi(node.node_untuk_return, konteks))
-			if (res.harus_return()) return res;
+        if (node.node_untuk_return) {
+            isi = res.daftar(this.kunjungi(node.node_untuk_return, konteks))
+            if (res.harus_return()) return res;
         }
-		
-		//console.log("ketemu return ", isi)
-		return res.berhasil_return(isi)
+
+        //console.log("ketemu return ", isi)
+        return res.berhasil_return(isi)
     }
 
     kunjungi_NodeLanjutkan(node, konteks) {
-		//console.log("ketemu continue")
-		return new HasilRuntime().berhasil_lanjutkan()
+        //console.log("ketemu continue")
+        return new HasilRuntime().berhasil_lanjutkan()
     }
 
-	kunjungi_NodeBerhenti(node, context) {
-		// print("ketemu break")
-		return new HasilRuntime().berhasil_break()
+    kunjungi_NodeBerhenti(node, context) {
+        // print("ketemu break")
+        return new HasilRuntime().berhasil_break()
     }
 }
 

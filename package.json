@@ -1,6 +1,6 @@
 {
   "name": "node-gblk",
-  "version": "0.0.2752",
+  "version": "0.0.2762",
   "description": "GBLK language fully written in node.js",
   "main": "main.js",
   "bin": {

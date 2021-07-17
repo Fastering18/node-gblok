@@ -1,6 +1,6 @@
-lokal xor = fungsi(n) -> n*-1-1
+lokal xor = fungsi(n) -> n*-1-1 
 
-print(xor.amogos)
+-- print(xor.amogos)
 tunggu(2)
 print(xor(-3)==~-3)
 
@@ -8,9 +8,17 @@ lokal str = "got em"
 lokal res = eval("str") --return the str
 print(res)
 
-jika ("") maka
-    print("sus") 
+coba
+    baka(a)
+tangkap e
+    coba
+        m(e)
+    tangkap(err)
+        print(err)
+        print(tipe err)
+    tutup
 tutup
+
 
 print(tipe salah)
 print((tipe(1 + 2) == "Angka") ? "sus" : "not sus")
