@@ -1,0 +1,42 @@
+{
+  "name": "node-gblk",
+  "version": "0.0.2776",
+  "description": "GBLK language fully written in node.js",
+  "main": "main.js",
+  "types": "src/typings/defs.d.ts",
+  "bin": {
+    "gblok": "cmd/cli.js"
+  },
+  "homepage": "https://gblk-lang.glitch.me/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fastering18/node-gblk.git"
+  },
+  "bugs":{
+    "url" : "https://github.com/Fastering18/node-gblk/issues",
+    "email" : "Fastering18@gmail.com"
+  },
+  "scripts": {
+    "build": "./pkgbuild.sh",
+    "clean": "rmdir bin",
+    "test": "node main.test.js"
+  },
+  "pkg": {
+    "targets": [
+      "node14-win-x64",
+      "node14-linux-arm64"
+    ],
+    "outputPath": "bin"
+  },
+  "keywords": [
+    "gblk",
+    "node-gblk",
+    "language",
+    "cli"
+  ],
+  "author": "Fastering18",
+  "license": "MIT",
+  "dependencies": {
+    "caporal": "^1.4.0"
+  }
+}

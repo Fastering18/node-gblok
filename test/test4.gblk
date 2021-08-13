@@ -1,0 +1,21 @@
+fungsi wiggility(n, str)
+     lokal s = "";
+     untuk tb = 1 ke n lakukan
+       s = s + str + ((tb == n) ? "" : ("\n" + "\t" * tb))
+     tutup
+     untuk tb = 0 ke n + 1 lakukan
+       s = s + str + ((tb == n) ? "" : ("\n" + "\t" * (n - tb)))
+     tutup
+     kembali s
+tutup
+
+fungsi uler(tinggi, lebar, teks)
+   lokal hasil = ""
+   untuk i = 1 ke tinggi + 1 lakukan
+      hasil = hasil + wiggility(lebar - 1, teks) + "\n"
+   tutup
+   hasil = hasil + teks
+   kembali hasil
+tutup
+
+print(uler(1000, 3, "wiggle"))
