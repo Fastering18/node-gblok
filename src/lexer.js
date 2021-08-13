@@ -31,6 +31,8 @@ const {
     TokenTernary,
     TokenTernaryBagi,
     TokenTitikIndeks,
+    TokenKurungKurawaKiri,
+    TokenKurungKurawaKanan,
     TokenEOF,
     Konstruktor,
     TokenXOR
@@ -133,6 +135,12 @@ class Lexer {
                 this.maju()
             } else if (this.karakterSkrg == ":") {
                 tokens.push(new Token(TokenTernaryBagi, null, this.posisi))
+                this.maju()
+            } else if (this.karakterSkrg == "{") {
+                tokens.push(new Token(TokenKurungKurawaKiri, null, this.posisi))
+                this.maju()
+            } else if (this.karakterSkrg == "}") {
+                tokens.push(new Token(TokenKurungKurawaKanan, null, this.posisi))
                 this.maju()
             } else {
                 var posisi_awal = this.posisi.salin()

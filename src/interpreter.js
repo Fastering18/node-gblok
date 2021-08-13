@@ -14,7 +14,8 @@ const {
     BooLean,
     Daftar,
     Fungsi,
-    Nil
+    Nil,
+    Objek
 } = require("../lib/TipeData");
 const {
     TokenInteger,
@@ -171,9 +172,11 @@ class Interpreter {
             isi_untuk_diindeks.nilai[kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai] = isiBaru;
             return res.berhasil(isiBaru || Angka.nil)
         } else {
-            var idx = kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai
-            var isiData = (isi_untuk_diindeks.metode["metode_" + idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
-            return res.berhasil(isiData || Angka.nil)
+            //if (isi_untuk_diindeks.constructor.name == "Daftar") {
+                var idx = kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai
+                var isiData = (isi_untuk_diindeks.metode["metode_" + idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
+                return res.berhasil(isiData || Angka.nil)
+        //    }
         }
     }
 
@@ -207,6 +210,20 @@ class Interpreter {
                 .atur_konteks(konteks)
                 .atur_posisi(node.posisi_awal, node.posisi_akhir)
         )
+    }
+
+    kunjungi_ObjekNode(node, konteks) {
+        var res = new HasilRuntime()
+        var obj_hasil = {}
+        //console.log(Object.entries(node.isi_objek))
+
+        for (var k in node.isi_objek) {
+            obj_hasil[k] = res.daftar(this.kunjungi(node.isi_objek[k], konteks))
+            if (res.harus_return()) return res
+        }
+
+        return res.berhasil(new Objek(obj_hasil).atur_konteks(konteks)
+        .atur_posisi(node.posisi_awal, node.posisi_akhir))
     }
 
     kunjungi_NodeOperasiBinary(node, konteks) {

@@ -22,7 +22,8 @@ const {
     NodeLanjutkan,
     NodeBerhenti,
     NodeTernary,
-    NodeCoba
+    NodeCoba,
+    ObjekNode
 } = require("../lib/nodes");
 const {
     TokenInteger,
@@ -55,7 +56,9 @@ const {
     TokenTernary,
     TokenTernaryBagi,
     TokenTitikIndeks,
-    TokenXOR
+    TokenXOR,
+    TokenKurungKurawaKiri,
+    TokenKurungKurawaKanan
 } = require("../lib/enums");
 const { SintaksSalah } = require("../lib/errors");
 const { HasilParse } = require("../lib/HasilParse");
@@ -236,6 +239,12 @@ class Parser {
             )
 
         return res.berhasil(node)
+    }
+
+    skip_nl() {
+        while(this.tokenSkrg.tipe == TokenLineBaru) 
+            this.maju()
+        
     }
 
     binary_operator(fungsiA, option, fungsiB) {
@@ -492,6 +501,11 @@ class Parser {
             if (res.error) return res;
             return res.berhasil(daftar_expr)
 
+        } else if (tokenskrg.tipe == TokenKurungKurawaKiri) {
+            var objek_expr = res.daftar(this.objek_expr())
+            if (res.error) return res;
+            return res.berhasil(objek_expr)
+
         } else if (tokenskrg.sama_dengan(TokenKeyword, "jika")) {
             var if_expr = res.daftar(this.if_expr())
             if (res.error) return res;
@@ -578,6 +592,93 @@ class Parser {
         return res.berhasil(
             new DaftarNode(isi_elemen, posisi_awal, this.tokenSkrg.posisi_akhir.salin())
         )
+    }
+
+    objek_expr() {
+        var res = new HasilParse()
+        var isi_obj = {}
+        var posisi_awal = this.tokenSkrg.posisi_awal.salin()
+
+        if (this.tokenSkrg.tipe != TokenKurungKurawaKiri)
+            return res.gagal(
+                new SintaksSalah(
+                    this.tokenSkrg.posisi_awal,
+                    this.tokenSkrg.posisi_akhir,
+                    "Dibutuhkan '{'",
+                )
+            )
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        if (this.tokenSkrg.tipe == TokenKurungKurawaKanan) {
+            res.daftar_kemajuan()
+            this.maju()
+        } else {
+            //console.log(this.partial_objek_expr())
+            let [x_res, x_kunci, x_isi] = this.partial_objek_expr()
+            if (x_res.error) return x_res;
+
+            isi_obj[x_kunci.value] = x_isi;
+            this.skip_nl()
+            while (this.tokenSkrg.tipe == TokenKoma) {
+                res.daftar_kemajuan()
+                this.maju()
+                this.skip_nl()
+
+                let [x_res, x_kunci, x_isi] = this.partial_objek_expr()
+                if (x_res.error) return x_res;
+                //console.log(x_kunci)
+                isi_obj[x_kunci.value] = x_isi;
+            }
+
+            this.skip_nl()
+            if (this.tokenSkrg.tipe !== TokenKurungKurawaKanan)
+                return res.gagal(
+                    new SintaksSalah(
+                        this.tokenSkrg.posisi_awal,
+                        this.tokenSkrg.posisi_akhir,
+                        "Dibutuhkan ',' atau '}'",
+                    )
+                )
+
+            res.daftar_kemajuan()
+            this.maju()
+        }
+
+        return res.berhasil(new ObjekNode(isi_obj, posisi_awal, this.tokenSkrg.posisi_akhir.salin()))
+    }
+
+    partial_objek_expr() {
+        var res = new HasilParse()
+
+        let xKunci = this.tokenSkrg
+
+        if (res.error)
+            return [res, null, null];
+        if (xKunci.tipe !== TokenIdentifier && xKunci.tipe !== TokenString) return [res.gagal(new SintaksSalah(
+            this.tokenSkrg.posisi_awal,
+            this.tokenSkrg.posisi_akhir, "Kunci data harus berupa identifier atau string")), null, null]
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        //console.log(this.tokenSkrg.tipe)
+        if (this.tokenSkrg.tipe !== TokenTernaryBagi) return [res.gagal(new SintaksSalah(
+            this.tokenSkrg.posisi_awal,
+            this.tokenSkrg.posisi_akhir, "Kunci data harus diikuti dengan titik dua")), null, null]
+
+        res.daftar_kemajuan()
+        this.maju()
+        this.skip_nl()
+
+        let xIsiData = res.daftar(this.expr())
+        if (res.error)
+            return [res, null, null];
+
+        this.skip_nl()
+
+        return [res, xKunci, xIsiData]
     }
 
     akses_ato_edit(nama_var) {

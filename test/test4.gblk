@@ -18,4 +18,11 @@ fungsi uler(tinggi, lebar, teks)
    kembali hasil
 tutup
 
-print(uler(1000, 3, "wiggle"))
+print(uler(2, 3, "wiggle"))
+
+
+lokal obj = {"12": "sus", abc: {bb: "sas"}, 
+data: fungsi() -> "sas" 
+, sus: benar}
+
+print( obj)
