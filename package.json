@@ -1,6 +1,6 @@
 {
   "name": "node-gblk",
-  "version": "0.0.2778",
+  "version": "0.0.279",
   "description": "GBLK language fully written in node.js",
   "main": "main.js",
   "types": "src/typings/defs.d.ts",
@@ -12,9 +12,9 @@
     "type": "git",
     "url": "https://github.com/Fastering18/node-gblk.git"
   },
-  "bugs":{
-    "url" : "https://github.com/Fastering18/node-gblk/issues",
-    "email" : "Fastering18@gmail.com"
+  "bugs": {
+    "url": "https://github.com/Fastering18/node-gblk/issues",
+    "email": "Fastering18@gmail.com"
   },
   "scripts": {
     "build": "./pkgbuild.sh",
