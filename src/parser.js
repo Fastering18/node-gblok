@@ -242,9 +242,9 @@ class Parser {
     }
 
     skip_nl() {
-        while(this.tokenSkrg.tipe == TokenLineBaru) 
+        while (this.tokenSkrg.tipe == TokenLineBaru)
             this.maju()
-        
+
     }
 
     binary_operator(fungsiA, option, fungsiB) {
@@ -596,7 +596,7 @@ class Parser {
 
     objek_expr() {
         var res = new HasilParse()
-        var isi_obj = {}
+        var isi_obj = []
         var posisi_awal = this.tokenSkrg.posisi_awal.salin()
 
         if (this.tokenSkrg.tipe != TokenKurungKurawaKiri)
@@ -619,7 +619,7 @@ class Parser {
             let [x_res, x_kunci, x_isi] = this.partial_objek_expr()
             if (x_res.error) return x_res;
 
-            isi_obj[x_kunci.value] = x_isi;
+            isi_obj.push([x_kunci, x_isi]);
             this.skip_nl()
             while (this.tokenSkrg.tipe == TokenKoma) {
                 res.daftar_kemajuan()
@@ -627,9 +627,10 @@ class Parser {
                 this.skip_nl()
 
                 let [x_res, x_kunci, x_isi] = this.partial_objek_expr()
+                //console.log(x_res.error)
                 if (x_res.error) return x_res;
                 //console.log(x_kunci)
-                isi_obj[x_kunci.value] = x_isi;
+                isi_obj.push([x_kunci, x_isi]);
             }
 
             this.skip_nl()
@@ -652,13 +653,31 @@ class Parser {
     partial_objek_expr() {
         var res = new HasilParse()
 
-        let xKunci = this.tokenSkrg
+        let xKunci = this.tokenSkrg;
+        let xIsiData = null;
 
-        if (res.error)
-            return [res, null, null];
-        if (xKunci.tipe !== TokenIdentifier && xKunci.tipe !== TokenString) return [res.gagal(new SintaksSalah(
+        if (xKunci.tipe === TokenKotakKiri) {
+            res.daftar_kemajuan()
+            this.maju()
+
+            xKunci = res.daftar(this.expr())
+            if (res.error)
+                return [res, null, null];
+
+            //res.daftar_kemajuan()
+            //this.maju()
+
+            if (this.tokenSkrg.tipe !== TokenKotakKanan) return [res.gagal(new SintaksSalah(
+                this.tokenSkrg.posisi_awal,
+                this.tokenSkrg.posisi_akhir, "Kunci data harus ditutup dengan ']'")), null, null]
+        } else {
+            xKunci = new NodeString(xKunci)
+        }
+
+        //console.log(xKunci)
+        /*if (![TokenIdentifier, TokenString, TokenInteger, TokenFloat].includes(xKunci.tipe)) return [res.gagal(new SintaksSalah(
             this.tokenSkrg.posisi_awal,
-            this.tokenSkrg.posisi_akhir, "Kunci data harus berupa identifier atau string")), null, null]
+            this.tokenSkrg.posisi_akhir, "Kunci data harus berupa identifier, string atau angka")), null, null]*/
 
         res.daftar_kemajuan()
         this.maju()
@@ -672,13 +691,14 @@ class Parser {
         this.maju()
         this.skip_nl()
 
-        let xIsiData = res.daftar(this.expr())
+        xIsiData = res.daftar(this.expr())
         if (res.error)
             return [res, null, null];
 
         this.skip_nl()
 
         return [res, xKunci, xIsiData]
+
     }
 
     akses_ato_edit(nama_var) {

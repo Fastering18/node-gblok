@@ -13,7 +13,7 @@ executeSync("print('hello world')", "program.gblk")
 > lokal str = "abcd"  
 > print((str.besar)())  
 
-### Added eval function \[BETA\] `0.0.273`  
+### Added eval function `0.0.273`  
 > lokal str = "got em"  
 > lokal res = eval("str") --return the str   value  
 > print(res)  
@@ -47,6 +47,10 @@ print(obj.nama)
 ### CLI usage  
 Install package as global `npm i -g node-gblk`  
 Run command `gblok run <filepath>`  
+
+`gblok`: command to run files  
+`gpm`: command to install and manage packages (coming soon!)  
+
 
 ### node-gblk  
 

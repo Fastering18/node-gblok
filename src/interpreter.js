@@ -218,7 +218,9 @@ class Interpreter {
         //console.log(Object.entries(node.isi_objek))
 
         for (var k in node.isi_objek) {
-            obj_hasil[k] = res.daftar(this.kunjungi(node.isi_objek[k], konteks))
+            let kunci = res.daftar(this.kunjungi(node.isi_objek[k][0]))
+            //console.log(kunci)
+            obj_hasil[kunci.nilai] = res.daftar(this.kunjungi(node.isi_objek[k][1], konteks))
             if (res.harus_return()) return res
         }
 

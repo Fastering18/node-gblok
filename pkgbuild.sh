@@ -1,5 +1,8 @@
-#command -v pkg >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
 #!/bin/bash
+
+# Build gblk compiler into standalone 
+# executable using pkg
+# https://www.npmjs.com/package/pkg
 
 if ! command -v pkg &> /dev/null
 then
@@ -9,6 +12,8 @@ fi
 echo "Terdapat `pkg` package, melanjutkan"
 
 # build dgn pkg
-#pkg .
+pkg .
 
-ping -n 8 127.0.0.1 >nul
+
+
+#ping -n 2 127.0.0.1 >nul
