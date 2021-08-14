@@ -18,13 +18,20 @@ executeSync("print('hello world')", "program.gblk")
 > lokal res = eval("str") --return the str   value  
 > print(res)  
 
-### Added try catch block \[BETA\] `0.0.276`  
+### Added try catch block `0.0.276`  
 ```gblk
 coba
     print(sos)
 tangkap(err)
     print(err)
 tutup
+```  
+
+### Added object type data \[BETA\] `0.0.2778`  
+```gblk
+lokal obj = {sus: benar, nama: "red"}
+print(obj)
+print(obj.nama)
 ```  
 
 ### API  
