@@ -1,0 +1,7 @@
+{
+    "nama": "nama-module",
+    "versi": "0.0.1",
+    "deskripsi": "mogus mogus test lib",
+    "script": "index.gblk",
+    "modules": {}
+}

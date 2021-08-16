@@ -13,10 +13,12 @@ global_tabel_simbol.tulis("nil", TipeData.Angka.nil)
 global_tabel_simbol.tulis("print", TipeData.BuiltInFungsi.tulis)
 global_tabel_simbol.tulis("tunggu", TipeData.BuiltInFungsi.tunggu)
 global_tabel_simbol.tulis("eval", TipeData.BuiltInFungsi.eval)
+global_tabel_simbol.tulis("impor", TipeData.BuiltInFungsi.import)
 
-function buatKonteks(nkontek) {
+function buatKonteks(nkontek, lokasifile) {
     var konteks = new Konteks(typeof nkontek == "string" ? nkontek : "<program>")
     konteks.TabelSimbol = global_tabel_simbol
+    konteks.lokasi = lokasifile
     return konteks
 }
 
@@ -38,7 +40,7 @@ function esekusiLangsung(script, nama_program) {
     if (hasil.error) return { error: hasil.error, hasil: null }
 
     var interpreter = new Interpreter()
-    var konteks = buatKonteks()
+    var konteks = buatKonteks("<main>", nama_program)
     hasil = interpreter.kunjungi(hasil.node, konteks)
     if (hasil.error) return { error: hasil.error, hasil: null }
 
@@ -48,7 +50,7 @@ function esekusiLangsung(script, nama_program) {
 function esekusiFile(fn) {
     if (!fs.existsSync(fn)) return Error("File tidak ditemukan");
     const isi = fs.readFileSync(fn).toString()
-    const hasil = esekusiLangsung(isi, path.basename(fn))
+    const hasil = esekusiLangsung(isi, fn)
     return hasil
 }
 function esekusiFileTidakLangsung(fn) {
@@ -56,7 +58,7 @@ function esekusiFileTidakLangsung(fn) {
         if (!fs.existsSync(fn)) return tolak(Error("File tidak ditemukan"))
         fs.readFile(fn, (err, isi) => {
             if (err) return tolak(err);
-            return trima(esekusiLangsung(isi.toString(), path.basename(fn)))
+            return trima(esekusiLangsung(isi.toString(), fn))
         })
     })
 }

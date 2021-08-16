@@ -23,7 +23,8 @@ const {
     NodeBerhenti,
     NodeTernary,
     NodeCoba,
-    ObjekNode
+    ObjekNode,
+    NodeEkspor
 } = require("../lib/nodes");
 const {
     TokenInteger,
@@ -156,6 +157,15 @@ class Parser {
             var expr = res.coba_daftar(this.expr())
             if (!expr) this.balik(res.perhitungan_balik)
             return res.berhasil(new NodeReturn(expr, posisi_awal, this.tokenSkrg.posisi_awal.salin()))
+        }
+
+        if (this.tokenSkrg.sama_dengan(TokenKeyword, "ekspor")) {
+            res.daftar_kemajuan()
+            this.maju()
+
+            var expr = res.coba_daftar(this.expr())
+            if (!expr) this.balik(res.perhitungan_balik)
+            return res.berhasil(new NodeEkspor(expr, posisi_awal, this.tokenSkrg.posisi_awal.salin()))
         }
 
         if (this.tokenSkrg.sama_dengan(TokenKeyword, "lanjutkan")) {

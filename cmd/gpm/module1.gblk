@@ -1,21 +1,23 @@
+lokal modules = {}
+
 --[[
     fibbonaci rekursive (loop)
 ]]
-lokal fibbonaci = fungsi(a, n) 
+modules.fibbonaci = fungsi(a, n) 
     jika n <= 0 maka
         kembali 1;
     jikatidak
-        kembali a * fibbonaci(a, n-1);
+        kembali a * (modules.fibbonaci)(a, n-1);
     tutup
 tutup
 
-print(fibbonaci(5, 2)) -- 5 ^ 2
+--print((modules.fibbonaci)(5, 2)) == 5 ^ 2
 
 
 --[[
       piramid (segitiga)
 ]]
-fungsi piramid(r)
+modules.piramid = fungsi(r)
     jika r < 3 maka kembali "setidaknya row harus lebih dari 2" tutup
     lokal hasil = ""
     untuk i = 0 ke r lakukan
@@ -24,22 +26,12 @@ fungsi piramid(r)
     kembali hasil
 tutup
 
-print(piramid(20))
-
-
---[[
-    Tipe data array
-    indeks mulai dari 1
-]]
-lokal arr = ["sussy", "baka"]
-print(arr[1] + " " + arr[2])
-
 
 --[[
     Try catch block
     custom pcall dari lua
 ]]
-fungsi pcall(fn)
+modules.pcall = fungsi pcall(fn)
     lokal hasil = nil
     lokal berhasil = salah
 
@@ -53,6 +45,11 @@ fungsi pcall(fn)
     kembali [berhasil, hasil]
 tutup
 
+--[[ contoh
 lokal res = pcall(fungsi() 
     pprint(sos)
 tutup)
+]]
+
+
+ekspor modules

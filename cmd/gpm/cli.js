@@ -11,11 +11,9 @@ prog
   .command('init', 'Create example project')
   .argument('[filepath]', 'File path to be written', prog.STRING)
   .action(function (args) {
-    if (args.filepath) {
-      utility.putExampleFile(args.filepath.endsWith(".gblk") ? args.filepath : args.filepath + ".gblk")
-    } else {
-      utility.putExampleFile("index.gblk")
-    }
+    //if (args.filepath) {
+      utility.putExampleFile(args.filepath)
+    
   })
 
 

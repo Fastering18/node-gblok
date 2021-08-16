@@ -1,0 +1,55 @@
+lokal modules = {}
+
+--[[
+    fibbonaci rekursive (loop)
+]]
+modules.fibbonaci = fungsi(a, n) 
+    jika n <= 0 maka
+        kembali 1;
+    jikatidak
+        kembali a * (modules.fibbonaci)(a, n-1);
+    tutup
+tutup
+
+--print((modules.fibbonaci)(5, 2)) == 5 ^ 2
+
+
+--[[
+      piramid (segitiga)
+]]
+modules.piramid = fungsi(r)
+    jika r < 3 maka kembali "setidaknya row harus lebih dari 2" tutup
+    lokal hasil = ""
+    untuk i = 0 ke r lakukan
+        hasil = hasil + (" " * (r - i)) + ("* " * (i)) + "\n"
+    tutup
+    kembali hasil
+tutup
+
+
+--[[
+    Try catch block
+    custom pcall dari lua
+]]
+modules.pcall = fungsi pcall(fn)
+    lokal hasil = nil
+    lokal berhasil = salah
+
+    coba
+        hasil = fn()
+        berhasil = benar
+    tangkap(err)
+        hasil = err
+    tutup
+
+    kembali [berhasil, hasil]
+tutup
+
+--[[ contoh
+lokal res = pcall(fungsi() 
+    pprint(sos)
+tutup)
+]]
+
+
+ekspor modules

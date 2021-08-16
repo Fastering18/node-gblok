@@ -308,7 +308,7 @@ class Lexer {
 				while (this.karakterSkrg != ']' && this.karakterSkrg) this.maju();
 				this.maju()
 				if (this.karakterSkrg != "]") {
-					return {token: null, error: KarakterYangDibutuhkan(
+					return {token: null, error: new KarakterYangDibutuhkan(
 						posisi_awal, this.posisi, "Dibutuhkan ']'"
 					)}
                 }

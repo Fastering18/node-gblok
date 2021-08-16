@@ -1,0 +1,4 @@
+lokal lib1 = impor("./module1.gblk")
+
+print("5 ^ 2 =")
+print((lib1.fibbonaci)(5, 2))

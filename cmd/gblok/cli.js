@@ -16,7 +16,7 @@ prog
     const mulai = Date.now();
     var hasErr = false
     compiler.executeFile(args.filepath).then(out => {
-      //console.log(out.hasil.value);
+      //console.log(out.hasil.modules);
     }).catch(err => {
       hasErr = true
       console.log(`\n${warna.Ungu("Terdapat error saat mengesekusi file:")}\n\t${warna.Merah(err.toString())}`)

@@ -161,7 +161,7 @@ class Interpreter {
         if (res.harus_return()) return res;
 
         if (node.editIndeks) {
-            if (isi_untuk_diindeks.constructor.name != "Daftar") return res.gagal(new RTError(
+            if (!["Objek", "Daftar"].includes(isi_untuk_diindeks.constructor.name)) return res.gagal(new RTError(
                 node.posisi_awal,
                 node.posisi_akhir,
                 `${node.node_untuk_indeks.nama_token_variabel ? node.node_untuk_indeks.nama_token_variabel.value : "Nilai tengah (...)()"} bukan sebuah Array`,
@@ -219,6 +219,7 @@ class Interpreter {
 
         for (var k in node.isi_objek) {
             let kunci = res.daftar(this.kunjungi(node.isi_objek[k][0]))
+            if (res.harus_return()) return res;
             //console.log(kunci)
             obj_hasil[kunci.nilai] = res.daftar(this.kunjungi(node.isi_objek[k][1], konteks))
             if (res.harus_return()) return res
@@ -524,6 +525,19 @@ class Interpreter {
 
         //console.log("ketemu return ", isi)
         return res.berhasil_return(isi)
+    }
+
+    kunjungi_NodeEkspor(node, konteks) {
+        var res = new HasilRuntime()
+        var isi = Angka.nil
+
+        if (node.node_untuk_ekspor) {
+            isi = res.daftar(this.kunjungi(node.node_untuk_ekspor, konteks))
+            if (res.harus_return()) return res;
+        }
+
+        //console.log("export", isi)
+        return res.berhasil_return_module(isi)
     }
 
     kunjungi_NodeLanjutkan(node, konteks) {

@@ -5,7 +5,7 @@ regxutil.Huruf = /[A-Za-z_]/
 regxutil.Huruf_ato_Digit = /[A-Za-z0-9_]/
 
 regxutil.DigitString = "0123456789"
-regxutil.HurufString = "abcdefghijklmnopqrstuvwxyz"
+regxutil.HurufString = "abcdefghijklmnopqrstuvwxyz$_"
 regxutil.hurufdigitgabung = regxutil.DigitString + regxutil.HurufString;
 
 regxutil.DaftarEscapeKarakter = {"n": "\n", "t": "\t", "r": "\r"}
