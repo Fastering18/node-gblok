@@ -15,6 +15,11 @@ prog
       utility.putExampleFile(args.filepath)
     
   })
+  .command('compress', 'kompres sebelum upload ke gbpm')
+  .argument('[direktori]', 'Directory path to be compressed')
+  .action(function(args) {
+    
+  })
 
 
   prog.parse(process.argv);

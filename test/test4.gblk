@@ -26,3 +26,6 @@ data: fungsi() -> "sas"
 , ["sus" * 3]: benar}
 
 print( obj)
+
+lokal a = "m
+print(a)

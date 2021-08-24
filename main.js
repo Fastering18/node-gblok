@@ -33,8 +33,8 @@ function terminal(shell, ...opts) {
 
 function esekusiLangsung(script, nama_program) {
     const lex = new Lexer(typeof (nama_program) == "string" ? path.basename(nama_program) : "<stdin>", script)
-    var { hasil, err } = lex.buatToken()
-    if (err) return { error: err, hasil: null }
+    var { hasil, error } = lex.buatToken()
+    if (error) return { error, hasil }
 
     hasil = new Parser(hasil).parse()
     if (hasil.error) return { error: hasil.error, hasil: null }

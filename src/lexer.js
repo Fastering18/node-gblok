@@ -76,7 +76,9 @@ class Lexer {
             } else if (HurufString.includes(this.karakterSkrg.toLowerCase())) {
                 tokens.push(this._daftarlokal(tokens))
             } else if ('"\''.includes(this.karakterSkrg)) {
-                tokens.push(this._buatString())
+                const [error, x_tokn] = this._buatString()
+                if (error) return {hasil: null, error};
+                tokens.push(x_tokn)
             } else if (this.karakterSkrg == "+") {
                 tokens.push(new Token(TokenTambah, null, this.posisi))
                 this.maju()
@@ -85,7 +87,7 @@ class Lexer {
                 if (minusorpanah.token instanceof Token) {
                     tokens.push(minusorpanah.token)
                 } else if (minusorpanah.error) {
-                    return {hasil: null, err: minusorpanah.error}
+                    return {hasil: null, error: minusorpanah.error}
                 }
             } else if (this.karakterSkrg == "~") {
                 tokens.push(new Token(TokenXOR, null, this.posisi))
@@ -116,7 +118,7 @@ class Lexer {
                 this.maju()
             } else if (this.karakterSkrg == "!") {
                 var {token, error} = this.buat_tidak_sama()
-                if (error) return [], error
+                if (error) return {hasil: null, error}
                 tokens.push(token)
             } else if (this.karakterSkrg == "=") {
                 tokens.push(this.buat_kesamaan())
@@ -146,12 +148,12 @@ class Lexer {
                 var posisi_awal = this.posisi.salin()
                 var karakter = this.karakterSkrg
                 this.maju()
-                return {hasil: null, err: new KarakterSalah(posisi_awal, this.posisi, '"' + karakter + '"')}
+                return {hasil: null, error: new KarakterSalah(posisi_awal, this.posisi, '"' + karakter + '"')}
             }
         }
 
         tokens.push(new Token(TokenEOF, null, this.posisi))
-        return {hasil: tokens, err: null}//, null
+        return {hasil: tokens, error: null}//, null
     }
 
     _buatAngka() {
@@ -201,9 +203,11 @@ class Lexer {
             }
             this.maju()
         }
+        
+        if (this.karakterSkrg !== konstruktor) return [new KarakterYangDibutuhkan(posisi_awal, this.posisi, `Dibutuhkan ${konstruktor} untuk menutup string`), null]
 
         this.maju()
-		return new Token(TokenString, str, posisi_awal, this.posisi)
+		return [null, new Token(TokenString, str, posisi_awal, this.posisi)]
     }
 
     _daftarlokal(tokens) {
@@ -241,7 +245,7 @@ class Lexer {
             return {}
         }
 
-		return {token: new Token(tipe_token, posisi_awal, this.posisi), error: null}
+		return {token: new Token(tipe_token, null, posisi_awal, this.posisi), error: null}
     }
 
     buat_tidak_sama() {
@@ -250,11 +254,11 @@ class Lexer {
 
 		if (this.karakterSkrg == "=") {
 			this.maju()
-            return {token: new Token(TokenTidakSama, posisi_awal, this.posisi), error: null}
+            return {token: new Token(TokenTidakSama, null, posisi_awal, this.posisi), error: null}
         }
 
         this.maju()
-        return {token: null, error: KarakterYangDibutuhkan(posisi_awal, this.posisi, "'=' (setelah '!') operator")}
+        return {token: null, error: new KarakterYangDibutuhkan(posisi_awal, this.posisi, "'=' (setelah '!') operator")}
     }
 
     buat_kesamaan() {
