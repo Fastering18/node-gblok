@@ -3,5 +3,7 @@
     "versi": "0.0.1",
     "deskripsi": "mogus mogus test lib",
     "script": "index.gblk",
+    "author": "Username",
+    "lisensi": "MIT",
     "modules": {}
-}
+ }

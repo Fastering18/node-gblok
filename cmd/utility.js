@@ -1,31 +1,145 @@
 const fs = require("fs");
+const readline = require("readline")
 const warna = require("./warna");
+const ProjekLib = require("./projek")
 const path = require("path");
 const chalk = require('chalk');
 const ora = require('ora');
+const tar = require('tar')
 
 // some library used to modernify output
 
 function safe_path(pth) {
     return path.join(require.main.path, pth)
-} 
+}
 
-module.exports.putExampleFile = function(pth) {
+function getCacheData() {
+    const lok = safe_path("../config/cache.json")
+    const content = fs.readFileSync(lok)
+    return JSON.parse(content.toString())
+}
+
+function tanya(q, cb, rinput = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})) {
+    rinput.question(q, cb)
+}
+
+function _putProjek(nama_projek, pth) {
     const spinner = ora('Creating file...').start()
     const dotAnim = setInterval(() => spinner.text = spinner.text.length >= 16 ? "Creating file" : spinner.text.length >= 15 ? "Creating file..." : spinner.text.length >= 14 ? "Creating file.." : "Creating file.", 200)
-    const cwdFolder = path.join(process.cwd(), pth || ".")
+    const cwdFolder = path.join(process.cwd(), pth || ".");
+    const contohPaket = require("./_contoh/paket.json");
 
-    fs.mkdirSync(cwdFolder, {recursive: true})
+    contohPaket.nama = nama_projek || "nama-module"
+    fs.mkdirSync(cwdFolder, { recursive: true })
+    //this.getPackageFromDirectory(cwdFolder)
     try {
-        fs.writeFileSync(path.join(cwdFolder, "/module1.gblk"), fs.readFileSync(safe_path("./module1.gblk")));
-        fs.writeFileSync(path.join(cwdFolder, "/index.gblk"), fs.readFileSync(safe_path("./index.gblk")));
-        fs.writeFileSync(path.join(cwdFolder, "/paket.json"), fs.readFileSync(safe_path("./paket.json")));
+        fs.writeFileSync(path.join(cwdFolder, "/module1.gblk"), fs.readFileSync(safe_path("../_contoh/module1.gblk")));
+        fs.writeFileSync(path.join(cwdFolder, "/index.gblk"), fs.readFileSync(safe_path("../_contoh/index.gblk")));
+        fs.writeFileSync(path.join(cwdFolder, "/paket.json"), JSON.stringify(contohPaket, null, 3));
         //console.log(`${warna.Hijau("Success created")} ${warna.Bold(pth)} ${warna.Hijau("file")} ✅`)
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         clearInterval(dotAnim)
         spinner.fail(`An exception happened during creating file, please report this bug \uD83D\uDE33`)
     } finally {
-       if (spinner.isSpinning) setTimeout(() => {clearInterval(dotAnim); spinner.succeed(`Success created ${chalk.blue.bold(pth ? pth : "example")} project`)}, 100);
+        if (spinner.isSpinning) setTimeout(() => { clearInterval(dotAnim); spinner.succeed(`Success created ${chalk.blue.bold(nama_projek || pth || "example")} project`) }, 100);
+        //if (rinput) rinput.close();
     }
+}
+
+module.exports.putExampleFile = function (pth, opt = {}) {
+    if (opt.skip) return _putProjek(null, pth);
+    
+    const rinput = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    })
+    tanya("Apa nama projek nya? ", (txt) => _putProjek(txt, pth, rinput), rinput)
+}
+
+module.exports.getPackageFromDirectory = function (lokdir) {
+    const projectdir = path.resolve(process.cwd(), lokdir)
+    const paketlok = path.join(projectdir, "/paket.json")
+
+    //console.log("\n",projectdir, paketlok)
+    var projectInfo;
+    console.log(paketlok)
+    try {
+        projectInfo = new ProjekLib.Projek(require(paketlok))
+        projectInfo.lokasi = paketlok
+    } catch (err) {
+        //console.log(err)
+        return null
+    }
+    //console.log(projectInfo.json)
+    return projectInfo
+}
+
+module.exports.compressTar = function (pth = process.cwd(), out = ".", projek = path.basename(out)) {
+    return new Promise((y, n) => {
+        const fslist = fs.readdirSync(pth).filter(n => n != out)//.map(d => path.resolve(pth, d))
+        //console.log(fslist, pth)
+        tar.c({
+            gzip: true,
+            file: out,
+            cwd: pth
+            //C: projek
+        },
+            fslist
+            //fs.readdirSync(pth).map(d => path.resolve(pth, d))
+            //[pth]
+        ).then(() => y())
+    })
+}
+
+module.exports.uncompressTar = function (pth = ".", out = ".") {
+    tar.x({
+        file: pth,
+        C: out
+    }).then((b) => {
+        //console.log(b)
+    })
+
+    /*let dt = []
+    tar.t({
+        onentry: (e) => e.path.toString().endsWith("paket.json") ? e.on("data", m => dt.push(m)) : null,
+        file: pth,
+      }, er => {
+        const buf = Buffer.concat(dt)
+        console.log('file data', buf.toString())
+      })*/
+}
+
+module.exports.publishModule = async function(lokdir) {
+    const config = getCacheData()
+    const lokdircwd = lokdir ? path.resolve(process.cwd(), lokdir) : process.cwd()
+    //console.log(config)
+    if (!config["api_key"]) return console.log(`you haven't logined yet.\n> use command ${chalk.bold("gpm login")}`)
+
+    const spinner = ora('Looking for project paket.json').start()
+    const project = this.getPackageFromDirectory(lokdircwd)
+console.log(project)
+    if (!project) {
+        spinner.fail(`No paket.json found in ${lokdircwd}`)
+        return
+    }
+    
+    const tarballNama = `${project.nama}-${project.versi}.tgz`
+
+    console.log(`\n> Found project ${chalk.blue.bold(project.nama)}`)
+    spinner.text = "Generating tarball project..."
+    await this.compressTar(lokdircwd, tarballNama)
+    console.log(`> Tarball ${chalk.green.bold(tarballNama)} generated`)
+
+    spinner.text = "Uploading tarball to server..."
+    project.upload(config["api_key"]).then(d => {
+        console.log(d.data)
+    }).catch(e => {
+        console.log(e.response)
+    }).finally(() => {
+        spinner.succeed("idk")
+    })
 }

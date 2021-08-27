@@ -254,7 +254,6 @@ class Parser {
     skip_nl() {
         while (this.tokenSkrg.tipe == TokenLineBaru)
             this.maju()
-
     }
 
     binary_operator(fungsiA, option, fungsiB) {
