@@ -5,12 +5,14 @@ const FormData = require('form-data');
 const axios = require("axios")
 
 class Projek {
-    constructor({ lokasi, nama, versi, deskripsi, script, modules } = {}) {
+    constructor({ lokasi, nama, versi, deskripsi, script, lisensi, author, modules } = {}) {
         this.nama = nama || "nama-module"
         this.lokasi = lokasi
         this.versi = versi || "0.0.1"
         this.deskripsi = deskripsi || ""
         this.script = script
+        this.lisensi = lisensi || "MIT"
+        this.author = author
         this.modules = modules || {}
     }
 
@@ -69,12 +71,22 @@ class Projek {
             versi: this.versi,
             deskripsi: this.deskripsi,
             script: this.script,
+            lisensi: this.lisensi,
+            author: this.author,
             modules: this.modules
         }
     }
 }
 
+function downloadModule(nama, versi) {
+    return axios({
+        method: "get",
+        responseType: 'arraybuffer',
+        url: `https://planetscaledb-testing.fastering181.repl.co/api/v1/packages/${nama}/${versi}`,
+    })
+}
 
 module.exports = {
-    Projek
+    Projek,
+    downloadModule
 }

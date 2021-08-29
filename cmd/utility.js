@@ -1,11 +1,14 @@
 const fs = require("fs");
 const readline = require("readline")
-const warna = require("./warna");
+const tar = require('tar')
+const streamifier = require('streamifier');
+const { unzipSync } = require('zlib');
 const ProjekLib = require("./projek")
+const warna = require("./warna");
+
 const path = require("path");
 const chalk = require('chalk');
 const ora = require('ora');
-const tar = require('tar')
 
 // some library used to modernify output
 
@@ -52,7 +55,7 @@ function _putProjek(nama_projek, pth) {
 
 module.exports.putExampleFile = function (pth, opt = {}) {
     if (opt.skip) return _putProjek(null, pth);
-    
+
     const rinput = readline.createInterface({
         input: process.stdin,
         output: process.stdout
@@ -102,18 +105,39 @@ module.exports.uncompressTar = function (pth = ".", out = ".") {
     }).then((b) => {
         //console.log(b)
     })
-
-    /*let dt = []
-    tar.t({
-        onentry: (e) => e.path.toString().endsWith("paket.json") ? e.on("data", m => dt.push(m)) : null,
-        file: pth,
-      }, er => {
-        const buf = Buffer.concat(dt)
-        console.log('file data', buf.toString())
-      })*/
 }
 
-module.exports.publishModule = async function(lokdir) {
+module.exports.installModule = async function (nama, versi, _lokd) {
+    const cwdFolder = path.join(process.cwd(), _lokd || ".");
+    const gblk_modules_dir = path.join(cwdFolder, "./gblk_modules")
+    const projek_dir = path.join(gblk_modules_dir, nama)
+    const spinner = ora(`Installing ${chalk.blue.bold(nama)} module...`).start()
+
+    if (!fs.existsSync(gblk_modules_dir)) fs.mkdirSync(gblk_modules_dir, { recursive: true });
+    ProjekLib.downloadModule(nama, versi).then(d => {
+        //console.log(d.data)
+        if (!fs.existsSync(projek_dir)) fs.mkdirSync(projek_dir, {recursive: true});
+        const trak = streamifier.createReadStream(unzipSync(d.data))
+            .pipe(tar.t())
+            .on("entry", (e) => {
+                e.on("data", m => {
+                    //console.log(m.toString(), e.path)
+                    fs.writeFileSync(path.join(projek_dir, e.path), m)
+                })
+            })
+            .on("finish", () => {
+                spinner.succeed(`Success installed ${chalk.blue.bold(nama)} module`)
+            })
+    }).catch(e => {
+        if (e.response) {
+            spinner.fail(`Failed to install the module, ${JSON.parse(e.response.data.toString()).message}`)
+        } else {
+            spinner.fail(`Failed to install the module, ${e.statusText}`)
+        }
+    })
+}
+
+module.exports.publishModule = async function (lokdir) {
     const config = getCacheData()
     const lokdircwd = lokdir ? path.resolve(process.cwd(), lokdir) : process.cwd()
     //console.log(config)
@@ -121,12 +145,12 @@ module.exports.publishModule = async function(lokdir) {
 
     const spinner = ora('Looking for project paket.json').start()
     const project = this.getPackageFromDirectory(lokdircwd)
-console.log(project)
+    console.log(project)
     if (!project) {
         spinner.fail(`No paket.json found in ${lokdircwd}`)
         return
     }
-    
+
     const tarballNama = `${project.nama}-${project.versi}.tgz`
 
     console.log(`\n> Found project ${chalk.blue.bold(project.nama)}`)

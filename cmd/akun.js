@@ -1,5 +1,6 @@
 const fs = require("fs");
 const readline = require("readline")
+const child_process = require("child_process")
 const path = require("path");
 const chalk = require('chalk');
 const ora = require('ora');
@@ -70,4 +71,16 @@ module.exports.loginInput = function (rinput = readline.createInterface({
             })
         })
     })
+}
+
+module.exports.registerAkun = function() {
+    const spinner = ora('Opening chrome...').start()
+    child_process.exec(`${process.platform.startsWith("win") ? "start" : "open"} chrome https://planetscaledb-testing.fastering181.repl.co/login`, function(err, stdo, stderr) {
+        if (err) return spinner.fail(err.message);
+        if (stderr) {
+            spinner.fail("Unable to launch chrome to register")
+        } else {
+            spinner.succeed("Chrome browser opened to register")
+        }
+    });
 }

@@ -32,12 +32,18 @@ prog
   })
   .command('install', 'install module dari https://gblkpm.herokuapp.com')
   .argument('[module]', 'module yang akan di install', prog.STRING, prog.REQUIRED)
+  .option("-o", "Project working directory path")
   .action(function(args, opt) {
-    console.log("mogus")
+    const [nama_module, versi] = args.module.split(":")
+    utility.installModule(nama_module, versi, opt.o)
   })
   .command('login', 'login akun dari https://gblkpm.herokuapp.com')
   .action(function(args, opt) {
     akunManager.loginInput()
+  })
+  .command('register', 'register akun ke https://gblkpm.herokuapp.com')
+  .action(function(args, opt) {
+    akunManager.registerAkun()
   })
   .command('publish', 'upload module ke https://gblkpm.herokuapp.com')
   .argument('[direktori]', 'Project working directory path')
