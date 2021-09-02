@@ -49,7 +49,7 @@ function _putProjek(nama_projek, pth, rinput) {
         clearInterval(dotAnim)
         spinner.fail(`An exception happened during creating file, please report this bug \uD83D\uDE33`)
     } finally {
-        rinput.close()
+        if (rinput) rinput.close();
         if (spinner.isSpinning) setTimeout(() => { clearInterval(dotAnim); spinner.succeed(`Success created ${chalk.blue.bold(nama_projek || pth || "example")} project`) }, 100);
         //if (rinput) rinput.close();
     }
