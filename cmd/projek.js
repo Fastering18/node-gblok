@@ -86,7 +86,25 @@ function downloadModule(nama, versi) {
     })
 }
 
+function getPackageFromDirectory(lokdir) {
+    const paketlok = path.join(lokdir, "paket.json")
+
+    //console.log("\n",projectdir, paketlok)
+    var projectInfo;
+    //console.log(paketlok)
+    try {
+        projectInfo = new Projek(require(paketlok))
+        projectInfo.lokasi = paketlok
+    } catch (err) {
+        //console.log(err)
+        return null
+    }
+    //console.log(projectInfo.json)
+    return projectInfo
+}
+
 module.exports = {
     Projek,
-    downloadModule
+    downloadModule,
+    getPackageFromDirectory
 }

@@ -6,7 +6,7 @@ lokal eksponensial = fungsi(a, n)
     tutup
 tutup
 
-print(eksponensial(10, 5))
+print(eksponensial(10, 5)) -- 10 ^ 5
 
 fungsi piramid(r)
     jika r < 3 maka kembali "setidaknya row harus lebih dari 2" tutup

@@ -9,7 +9,7 @@ const { executeFileSync, executeSync, runTerminal } = require("./main")
 //if (hasil.error) console.log(hasil.error.toString());
 
 //executeSync("print('hai')", "ae.gblk")
-const skrip = 'print("hai test")'
+const skrip = `print("Hello world")`
 runTerminal(skrip, "./indeks.gblk", {runArgs: {"timeout": 1000}}).then(console.log)
 
 /*const lex = new Lexer("<program>", "benar == benarr")

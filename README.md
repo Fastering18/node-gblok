@@ -1,56 +1,70 @@
-## node.js fully hand written gblk interpreter  
+<p align="center">
+<h2>GBLK language written in Node.js</h2>
+<br>
+<img src="https://cdn.discordapp.com/attachments/783614662960349236/882809593963634698/android-chrome-192x192.png" alt="gblk-icon">
+<br>
+<img src="https://api.travis-ci.org/Fastering18/Membuat-Bahasa-Pemrograman.svg?branch=main" alt="travisci-test">  
 
+<p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
+</p>
+
+
+<hr>
+
+> fibbonaci function  
 ```gblk
-executeSync("print('hello world')", "program.gblk")
-```  
-**executeSync(script, name?)**  
-
-### Changed keyword in `0.0.265`  
-> **untuk ... maka** changed to **untuk ... lakukan**  `(for loop)`  
-> **saat ... maka** changed to **selama ... lakukan**  `(while loop)`  
-
-### New dot notation, string method and ternary operator \[BETA\] `0.0.27`  
-> lokal str = "abcd"  
-> print((str.besar)())  
-
-### Added eval function `0.0.273`  
-> lokal str = "got em"  
-> lokal res = eval("str") --return the str   value  
-> print(res)  
-
-### Added try catch block `0.0.276`  
-```gblk
-coba
-    print(sos)
-tangkap(err)
-    print(err)
+lokal fibbonaci = fungsi(a, n) 
+    jika n <= 0 maka
+        kembali 1;
+    jikatidak
+        kembali a * fibbonaci(a, n-1);
+    tutup
 tutup
+
+print(fibbonaci(5, 2)) -- 5 ^ 2
 ```  
 
-### Added object type data \[BETA\] `0.0.2778`  
+> pyramid function  
 ```gblk
-lokal obj = {sus: benar, nama: "red"}
-print(obj)
-print(obj.nama)
+lokal piramid = fungsi(r)
+    jika r < 3 maka kembali "row must higher than 2" tutup
+    lokal hasil = ""
+    untuk i = 0 ke r lakukan
+        hasil = hasil + (" " * (r - i)) + ("* " * (i)) + "\n"
+    tutup
+    kembali hasil
+tutup
+
+print(piramid(10))
+```
+
+### Compile with node.js  
+```js
+const gblk = require("node-gblk")
+
+const skrip = `print("Hello world")`
+gblk.runTerminal(skrip, "./indeks.gblk").then(console.log)
 ```  
-
-### API  
-| Functions      | Description |
-| ----------- | ----------- |
-| executeFile      | parameter: file path, program name. Can be used to compile script from file. returns Promise       |
-| executeFileSync   | parameter: file path, program name. (Syncronous)       |
-| execute   | parameter: script, program name. Can be used to compile script directly. returns Promise        |
-| executeSync   | parameter: script, program name. (Syncronous)        |  
-
-`runTerminal` added new function to get output as string (Promise)  
 
 ### CLI usage  
 Install package as global `npm i -g node-gblk`  
 Run command `gblok run <filepath>`  
 
 `gblok`: command to run files  
-`gpm`: command to install and manage packages (coming soon!)  
+> - **gblok help**                Show list commands  
+> - **gblok run index.gblk**      Run gblk file  
+> - **gblok repl**                Run gblk in REPL mode (directly compile in stdin)  
+
+<hr>
+
+`gpm`: command to install and manage packages  
+> - **gpm help**                  Show list commands  
+> - **gpm init**                  Initialize sample project folder  
+> - **gpm login**                 Login to our package manager  
+> - **gpm install module:versi**  Install module with specified version  
+> - **gpm publish**               Publish module to our package manager  
+
+> **Make sure to install this package globally to use CLI commands**  
 
 
-### node-gblk  
-
+Maintained by Fastering18

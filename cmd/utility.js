@@ -5,6 +5,7 @@ const streamifier = require('streamifier');
 const { unzipSync } = require('zlib');
 const ProjekLib = require("./projek")
 const warna = require("./warna");
+const compiler = require("../main");
 
 const path = require("path");
 const chalk = require('chalk');
@@ -29,7 +30,7 @@ function tanya(q, cb, rinput = readline.createInterface({
     rinput.question(q, cb)
 }
 
-function _putProjek(nama_projek, pth) {
+function _putProjek(nama_projek, pth, rinput) {
     const spinner = ora('Creating file...').start()
     const dotAnim = setInterval(() => spinner.text = spinner.text.length >= 16 ? "Creating file" : spinner.text.length >= 15 ? "Creating file..." : spinner.text.length >= 14 ? "Creating file.." : "Creating file.", 200)
     const cwdFolder = path.join(process.cwd(), pth || ".");
@@ -48,9 +49,14 @@ function _putProjek(nama_projek, pth) {
         clearInterval(dotAnim)
         spinner.fail(`An exception happened during creating file, please report this bug \uD83D\uDE33`)
     } finally {
+        rinput.close()
         if (spinner.isSpinning) setTimeout(() => { clearInterval(dotAnim); spinner.succeed(`Success created ${chalk.blue.bold(nama_projek || pth || "example")} project`) }, 100);
         //if (rinput) rinput.close();
     }
+}
+
+module.exports.runProjectAtauFile = function() {
+    
 }
 
 module.exports.putExampleFile = function (pth, opt = {}) {
@@ -64,12 +70,11 @@ module.exports.putExampleFile = function (pth, opt = {}) {
 }
 
 module.exports.getPackageFromDirectory = function (lokdir) {
-    const projectdir = path.resolve(process.cwd(), lokdir)
-    const paketlok = path.join(projectdir, "/paket.json")
+    const paketlok = path.join(lokdir, "paket.json")
 
     //console.log("\n",projectdir, paketlok)
     var projectInfo;
-    console.log(paketlok)
+    //console.log(paketlok)
     try {
         projectInfo = new ProjekLib.Projek(require(paketlok))
         projectInfo.lokasi = paketlok
@@ -83,7 +88,7 @@ module.exports.getPackageFromDirectory = function (lokdir) {
 
 module.exports.compressTar = function (pth = process.cwd(), out = ".", projek = path.basename(out)) {
     return new Promise((y, n) => {
-        const fslist = fs.readdirSync(pth).filter(n => n != out)//.map(d => path.resolve(pth, d))
+        const fslist = fs.readdirSync(pth).filter(n => n != out && n != "gblk_modules")//.map(d => path.resolve(pth, d))
         //console.log(fslist, pth)
         tar.c({
             gzip: true,
@@ -111,6 +116,7 @@ module.exports.installModule = async function (nama, versi, _lokd) {
     const cwdFolder = path.join(process.cwd(), _lokd || ".");
     const gblk_modules_dir = path.join(cwdFolder, "./gblk_modules")
     const projek_dir = path.join(gblk_modules_dir, nama)
+    const projek_deskriptor = this.getPackageFromDirectory(cwdFolder)
     const spinner = ora(`Installing ${chalk.blue.bold(nama)} module...`).start()
 
     if (!fs.existsSync(gblk_modules_dir)) fs.mkdirSync(gblk_modules_dir, { recursive: true });
@@ -118,14 +124,9 @@ module.exports.installModule = async function (nama, versi, _lokd) {
         //console.log(d.data)
         if (!fs.existsSync(projek_dir)) fs.mkdirSync(projek_dir, {recursive: true});
         const trak = streamifier.createReadStream(unzipSync(d.data))
-            .pipe(tar.t())
-            .on("entry", (e) => {
-                e.on("data", m => {
-                    //console.log(m.toString(), e.path)
-                    fs.writeFileSync(path.join(projek_dir, e.path), m)
-                })
-            })
+            .pipe(tar.x({ C: projek_dir}))
             .on("finish", () => {
+                projek_deskriptor.tambahModule([nama, versi])
                 spinner.succeed(`Success installed ${chalk.blue.bold(nama)} module`)
             })
     }).catch(e => {
@@ -140,12 +141,11 @@ module.exports.installModule = async function (nama, versi, _lokd) {
 module.exports.publishModule = async function (lokdir) {
     const config = getCacheData()
     const lokdircwd = lokdir ? path.resolve(process.cwd(), lokdir) : process.cwd()
-    //console.log(config)
     if (!config["api_key"]) return console.log(`you haven't logined yet.\n> use command ${chalk.bold("gpm login")}`)
 
     const spinner = ora('Looking for project paket.json').start()
     const project = this.getPackageFromDirectory(lokdircwd)
-    console.log(project)
+    //console.log(project)
     if (!project) {
         spinner.fail(`No paket.json found in ${lokdircwd}`)
         return
