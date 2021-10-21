@@ -11,7 +11,7 @@
 
 <hr>
 
-> fibbonaci function  
+> Fibbonaci function  
 ```gblk
 lokal fibbonaci = fungsi(a, n) 
     jika n <= 0 maka
@@ -24,7 +24,7 @@ tutup
 print(fibbonaci(5, 2)) -- 5 ^ 2
 ```  
 
-> pyramid function  
+> Pyramid function  
 ```gblk
 lokal piramid = fungsi(r)
     jika r < 3 maka kembali "row must higher than 2" tutup
@@ -36,6 +36,21 @@ lokal piramid = fungsi(r)
 tutup
 
 print(piramid(10))
+```
+
+> Dynamic objects  
+```gblk
+lokal obj = {
+    "sus": benar,
+    nama: "amogus",
+    isSus: fungsi() -> benar,
+    suspect: ["red", "white"]
+}
+
+print(obj -> "suspect" -> 1)
+print(obj -> "suspect" -> 2)
+print(obj -> "nama")
+print(obj)
 ```
 
 ### Compile with node.js  
@@ -66,5 +81,13 @@ Run command `gblok run <filepath>`
 
 > **Make sure to install this package globally to use CLI commands**  
 
+<br>
 
-Maintained by Fastering18
+### Package Manager  
+[https://gblkpm.herokuapp.com/](https://gblkpm.herokuapp.com/)  
+Register to create account
+
+<br>
+
+Maintained by Fastering18  
+[Discord](https://discord.gg/FHVjsSg7jU)&nbsp;&nbsp;|&nbsp;&nbsp;[Github](https://github.com/Fastering18)
