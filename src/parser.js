@@ -24,7 +24,8 @@ const {
     NodeTernary,
     NodeCoba,
     ObjekNode,
-    NodeEkspor
+    NodeEkspor,
+    NodeKelas
 } = require("../lib/nodes");
 const {
     TokenInteger,
@@ -299,7 +300,8 @@ class Parser {
                     TokenKurangDari,
                     TokenLebihDari,
                     TokenKurangAtauSama,
-                    TokenLebihAtauSama
+                    TokenLebihAtauSama,
+                    TokenPanah
                 ]
             )
         )
@@ -367,6 +369,7 @@ class Parser {
         if (this.tokenSkrg.tipe == TokenParentesisKiri) {
             res.daftar_kemajuan()
             this.maju()
+            this.skip_nl()
             var node_parameter = []
 
             if (this.tokenSkrg.tipe == TokenParentesisKanan) {
@@ -380,6 +383,7 @@ class Parser {
                 while (this.tokenSkrg.tipe == TokenKoma) {
                     res.daftar_kemajuan()
                     this.maju()
+                    this.skip_nl()
 
                     node_parameter.push(res.daftar(this.expr()))
                     if (res.error) return res;
@@ -532,13 +536,17 @@ class Parser {
 
         } else if (tokenskrg.sama_dengan(TokenKeyword, "fungsi")) {
             var fungsi = res.daftar(this.buat_fungsi())
-            if (res.error) return res
+            if (res.error) return res;
             return res.berhasil(fungsi)
         } else if (tokenskrg.sama_dengan(TokenKeyword, "coba")) {
             var cobaan = res.daftar(this.buat_try_catch())
-            if (res.error) return res
+            if (res.error) return res;
             return res.berhasil(cobaan)
-        }
+        } /*else if (tokenskrg.sama_dengan(TokenKeyword, "kelas")) {
+            var kelas = res.daftar(this.buat_kelas())
+            if (res.error) return res;
+            return res.berhasil(kelas)
+        }*/
         //console.log(this.tokenSkrg.tipe)
         if (this.tokenSkrg.sama_dengan("EOF")) return res.berhasil(null);
 
@@ -619,6 +627,7 @@ class Parser {
 
         res.daftar_kemajuan()
         this.maju()
+        this.skip_nl()
 
         if (this.tokenSkrg.tipe == TokenKurungKurawaKanan) {
             res.daftar_kemajuan()
@@ -629,6 +638,7 @@ class Parser {
             if (x_res.error) return x_res;
 
             isi_obj.push([x_kunci, x_isi]);
+            //this.maju()
             this.skip_nl()
             while (this.tokenSkrg.tipe == TokenKoma) {
                 res.daftar_kemajuan()
@@ -642,6 +652,7 @@ class Parser {
                 isi_obj.push([x_kunci, x_isi]);
             }
 
+            res.daftar_kemajuan()
             this.skip_nl()
             if (this.tokenSkrg.tipe !== TokenKurungKurawaKanan)
                 return res.gagal(
@@ -698,16 +709,16 @@ class Parser {
 
         res.daftar_kemajuan()
         this.maju()
-        this.skip_nl()
+        //this.skip_nl()
 
         xIsiData = res.daftar(this.expr())
         if (res.error)
             return [res, null, null];
 
+        res.daftar_kemajuan()
         this.skip_nl()
 
         return [res, xKunci, xIsiData]
-
     }
 
     akses_ato_edit(nama_var) {
@@ -1016,6 +1027,70 @@ class Parser {
         return res.berhasil(new NodeWhile(kondisi, isi, false))
     }
 
+    parse_parameter() {
+        var res = new HasilParse()
+        var nama_token_parameter = []
+
+        if (this.tokenSkrg.tipe != TokenParentesisKiri)
+            return [null, res.gagal(
+                new SintaksSalah(
+                    this.tokenSkrg.posisi_awal,
+                    this.tokenSkrg.posisi_akhir,
+                    "Dibutuhkan '('",
+                )
+            )]
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        if (this.tokenSkrg.tipe == TokenIdentifier) {
+            nama_token_parameter.push(this.tokenSkrg)
+            res.daftar_kemajuan()
+            this.maju()
+
+            while (this.tokenSkrg.tipe == TokenKoma) {
+                res.daftar_kemajuan()
+                this.maju()
+
+                if (this.tokenSkrg.tipe != TokenIdentifier)
+                    return [null, res.gagal(
+                        new SintaksSalah(
+                            this.tokenSkrg.posisi_awal,
+                            this.tokenSkrg.posisi_akhir,
+                            "Dibutuhkan pengenal variabel atau '('",
+                        )
+                    )]
+
+                nama_token_parameter.push(this.tokenSkrg)
+                res.daftar_kemajuan()
+                this.maju()
+            }
+
+            if (this.tokenSkrg.tipe != TokenParentesisKanan)
+                return [null, res.gagal(
+                    new SintaksSalah(
+                        this.tokenSkrg.posisi_awal,
+                        this.tokenSkrg.posisi_akhir,
+                        "Dibutuhkan ',' atau ')'",
+                    )
+                )]
+        } else {
+            if (this.tokenSkrg.tipe != TokenParentesisKanan)
+                return [null, res.gagal(
+                    new SintaksSalah(
+                        this.tokenSkrg.posisi_awal,
+                        this.tokenSkrg.posisi_akhir,
+                        "Dibutuhkan ',' atau ')' untuk meneruskan daftar parameter",
+                    )
+                )]
+        }
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        return [nama_token_parameter, res]
+    }
+
     buat_fungsi() {
         var res = new HasilParse()
         var token_nama_variabel = null
@@ -1144,6 +1219,99 @@ class Parser {
         return res.berhasil(
             new NodeBuatFungsi(token_nama_variabel, nama_token_parameter, isistatement, false)
         )
+    }
+
+    buat_kelas() {
+        var res = new HasilParse()
+        var namaclass;
+        var metodeclass = [];
+
+        if (!(this.tokenSkrg.sama_dengan(TokenKeyword, "kelas")))
+            return res.gagal(
+                new SintaksSalah(
+                    this.tokenSkrg.posisi_awal,
+                    this.tokenSkrg.posisi_akhir,
+                    "Dibutuhkan 'coba'",
+                )
+            )
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        if (this.tokenSkrg.tipe != TokenIdentifier)
+            return res.gagal(
+                new SintaksSalah(
+                    this.tokenSkrg.posisi_awal,
+                    this.tokenSkrg.posisi_akhir,
+                    "Dibutuhkan nama untuk kelas",
+                )
+            )
+
+        namaclass = this.tokenSkrg
+        res.daftar_kemajuan()
+        this.maju()
+        this.skip_nl()
+
+        while ([TokenIdentifier, TokenKeyword].includes(this.tokenSkrg.tipe)&&!this.tokenSkrg.sama_dengan(TokenKeyword,"tutup")) {
+            let nama_fungsi, method_statik, method_dapat, method_terap;
+            if (this.tokenSkrg.sama_dengan(TokenKeyword, "statik")) {
+                method_statik = true
+                res.daftar_kemajuan()
+                this.maju()
+            }
+            if (this.tokenSkrg.sama_dengan(TokenKeyword, "dapat")) {
+                method_dapat = true
+                res.daftar_kemajuan()
+                this.maju()
+            } else if (this.tokenSkrg.sama_dengan(TokenKeyword, "terap")) {
+                method_terap = true
+                res.daftar_kemajuan()
+                this.maju()
+            }
+
+            if (this.tokenSkrg.tipe != TokenIdentifier)
+                return res.gagal(
+                    new SintaksSalah(
+                        this.tokenSkrg.posisi_awal,
+                        this.tokenSkrg.posisi_akhir,
+                        "Dibutuhkan nama untuk fungsi/metode class",
+                    )
+                )
+
+            nama_fungsi = this.tokenSkrg
+
+            res.daftar_kemajuan()
+            this.maju()
+
+            var [nama_parameter, res_x] = this.parse_parameter()
+            res.daftar(res_x)
+            if (res.error) return res;
+
+            var isistatement = res.daftar(this.statements())
+            if (res.error) return res;
+
+            if (!(this.tokenSkrg.sama_dengan(TokenKeyword, 'tutup')))
+                return res.gagal(new SintaksSalah(
+                    this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+                    "Dibutuhkan 'tutup' untuk menutup block fungsi"
+                ))
+
+            res.daftar_kemajuan()
+            this.maju()
+            this.skip_nl()
+            metodeclass.push(new NodeBuatFungsi(nama_fungsi, nama_parameter, isistatement, false))
+        }
+        console.log(metodeclass)
+
+        if (!(this.tokenSkrg.sama_dengan(TokenKeyword, 'tutup')))
+            return res.gagal(new SintaksSalah(
+                this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+                "Dibutuhkan 'tutup' untuk menutup block fungsi"
+            ))
+        res.daftar_kemajuan()
+        this.maju()
+
+        return res.berhasil(new NodeKelas(namaclass, metodeclass))
     }
 
     buat_try_catch() {

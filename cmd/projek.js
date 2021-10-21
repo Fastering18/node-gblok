@@ -1,8 +1,10 @@
-const contohPaket = require("./_contoh/paket.json")
-const fs = require("fs")
-const path = require("path")
+const contohPaket = require("./_contoh/paket.json");
+const fs = require("fs");
+const path = require("path");
 const FormData = require('form-data');
-const axios = require("axios")
+const axios = require("axios");
+const util = require("util")
+const enumItems = require("../lib/enums")
 
 class Projek {
     constructor({ lokasi, nama, versi, deskripsi, script, lisensi, author, modules } = {}) {
@@ -55,7 +57,7 @@ class Projek {
 
         return axios({
             method: "post",
-            url: "https://planetscaledb-testing.fastering181.repl.co/api/v1/new/package",
+            url: `${enumItems.PKGManager.baseURL}${enumItems.PKGManager.publishPackageURL}`,
             data: form,
             headers: { ...form.getHeaders(), Authorization: tokn }
         })
@@ -82,7 +84,7 @@ function downloadModule(nama, versi) {
     return axios({
         method: "get",
         responseType: 'arraybuffer',
-        url: `https://planetscaledb-testing.fastering181.repl.co/api/v1/packages/${nama}/${versi}`,
+        url: `${enumItems.PKGManager.baseURL}${util.format(enumItems.PKGManager.installPackageURL, nama, versi)}`,
     })
 }
 

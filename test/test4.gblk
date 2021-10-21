@@ -21,8 +21,12 @@ tutup
 print(uler(2, 3, "wiggle"))
 
 
-lokal obj = {"12": "sus", abc: {bb: "sas"}, 
-data: fungsi() -> "sas" 
-, ["sus" * 3]: benar}
+lokal obj = {
+  "12": "sus", 
+  abc: {bb: "sas"}, 
+  data: fungsi() -> "sas" , 
+  ["sus" * 3]: benar
+}
 
-print( obj)
+print(obj)
+print(obj -> "abc" -> "bb")

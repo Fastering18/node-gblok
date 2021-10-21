@@ -4,7 +4,9 @@ const child_process = require("child_process")
 const path = require("path");
 const chalk = require('chalk');
 const ora = require('ora');
-const axios = require("axios")
+const axios = require("axios");
+const enumItems = require("../lib/enums");
+const { PKGManager } = require("../lib/enums");
 
 function safe_path(pth) {
     return path.join(require.main.path, pth)
@@ -23,7 +25,7 @@ function saveCacheData(dt = {}) {
 
 function loginPost(email, password) {
     return new Promise((y, gk) => {
-        axios.post("https://planetscaledb-testing.fastering181.repl.co/api/v1/login", {
+        axios.post(`${enumItems.PKGManager.baseURL}${enumItems.PKGManager.loginURL}`, {
             email, password
         }, { headers: { "content-type": "application/json" } }).then(d => {
             y(d.data)
@@ -75,7 +77,7 @@ module.exports.loginInput = function (rinput = readline.createInterface({
 
 module.exports.registerAkun = function() {
     const spinner = ora('Opening chrome...').start()
-    child_process.exec(`${process.platform.startsWith("win") ? "start" : "open"} chrome https://planetscaledb-testing.fastering181.repl.co/login`, function(err, stdo, stderr) {
+    child_process.exec(`${process.platform.startsWith("win") ? "start" : "open"} chrome ${enumItems.PKGManager.baseURL}${enumItems.PKGManager.browserLoginURL}`, function(err, stdo, stderr) {
         if (err) return spinner.fail(err.message);
         if (stderr) {
             spinner.fail("Unable to launch chrome to register")

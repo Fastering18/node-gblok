@@ -294,6 +294,10 @@ class Interpreter {
             var { hasil, err } = kiri.atau_oleh(kanan)
             jawaban = hasil;
             error = err;
+        } else if (node.operator_token.tipe == TokenPanah) {
+            var { hasil, err } = kiri.akses(kanan)
+            jawaban = hasil;
+            error = err;
         } else {
             //console.log(node.operator_token)
         }
