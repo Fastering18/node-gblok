@@ -25,8 +25,14 @@ lokal obj = {
   "12": "sus", 
   abc: {bb: "sas"}, 
   data: fungsi() -> "sas" , 
-  ["sus" * 3]: benar
+  ["sus" * 3]: benar,
+  "a": 1,
+  "b": 2
 }
 
 print(obj)
-print(obj -> "abc" -> "bb")
+print(obj -> abc -> bb)
+print(obj["abc"]["bb"])
+
+lokal m = [1,2,3]
+print(m -> 1)

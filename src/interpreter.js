@@ -157,23 +157,46 @@ class Interpreter {
             node.posisi_awal, node.posisi_akhir
         )
 
-        var kunciIndeks = res.daftar(this.kunjungi(node.indeks, konteks))
+        var prevIdx;
+        for (var i=0; i<node.indeks.length-1; i++) { 
+            var kunciIndeks = node.interp_indeks? res.daftar(this.kunjungi(node.indeks[i], konteks)) : node.indeks[i]
+            if (res.harus_return()) return res;
+            if (kunciIndeks instanceof Angka) kunciIndeks.nilai -= 1 
+            else if (typeof(kunciIndeks.value) == "number") kunciIndeks.value -= 1;
+
+            var idx = kunciIndeks.nilai !== undefined ? kunciIndeks.nilai : kunciIndeks.value
+            isi_untuk_diindeks = (isi_untuk_diindeks.metode["metode_" + idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
+
+            if (!isi_untuk_diindeks || isi_untuk_diindeks instanceof Nil) return res.gagal(new RTError(
+                node.posisi_awal,
+                node.posisi_akhir,
+                `Tidak dapat mengakses nil (dari: ${prevIdx} -> ${idx})`,
+                konteks,
+            ))
+            prevIdx = idx;
+        }
+
+        var kunciIndeks = node.interp_indeks? res.daftar(this.kunjungi(node.indeks[node.indeks.length-1], konteks)) : node.indeks[i]
         if (res.harus_return()) return res;
+
+        if (kunciIndeks instanceof Angka) kunciIndeks.nilai -= 1 
+            else if (typeof(kunciIndeks.value) == "number") kunciIndeks.value -= 1
 
         if (node.editIndeks) {
             if (!["Objek", "Daftar"].includes(isi_untuk_diindeks.constructor.name)) return res.gagal(new RTError(
                 node.posisi_awal,
                 node.posisi_akhir,
-                `${node.node_untuk_indeks.nama_token_variabel ? node.node_untuk_indeks.nama_token_variabel.value : "Nilai tengah (...)()"} bukan sebuah Array`,
+                `${node.node_untuk_indeks.nama_token_variabel ? node.node_untuk_indeks.nama_token_variabel.value : "Nilai tengah (...)()"} Tidak dapat merubah properti non objek/array`,
                 konteks,
             ))
-
             var isiBaru = res.daftar(this.kunjungi(node.editIndeks, konteks))
-            isi_untuk_diindeks.nilai[kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai] = isiBaru;
+            if (res.harus_return()) return res;
+
+            isi_untuk_diindeks.nilai[kunciIndeks instanceof Angka ? kunciIndeks.nilai : kunciIndeks.value] = isiBaru; //isi_untuk_diindeks.nilai[node.interp_indeks? (kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai) : kunciIndeks.value] = isiBaru;
             return res.berhasil(isiBaru || Angka.nil)
         } else {
             //if (isi_untuk_diindeks.constructor.name == "Daftar") {
-                var idx = kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai
+                var idx = kunciIndeks.nilai !== undefined ? kunciIndeks.nilai : kunciIndeks.value
                 var isiData = (isi_untuk_diindeks.metode["metode_" + idx] || (isi_untuk_diindeks.nilai ? isi_untuk_diindeks.nilai[idx] : Angka.nil));
                 return res.berhasil(isiData || Angka.nil)
         //    }
@@ -295,6 +318,7 @@ class Interpreter {
             jawaban = hasil;
             error = err;
         } else if (node.operator_token.tipe == TokenPanah) {
+            //console.log(kanan)
             var { hasil, err } = kiri.akses(kanan)
             jawaban = hasil;
             error = err;

@@ -301,7 +301,7 @@ class Parser {
                     TokenLebihDari,
                     TokenKurangAtauSama,
                     TokenLebihAtauSama,
-                    TokenPanah
+                    //TokenPanah
                 ]
             )
         )
@@ -404,49 +404,52 @@ class Parser {
             }
             return res.berhasil(new NodePanggil(atom, node_parameter))
         } else if (this.tokenSkrg.tipe == TokenKotakKiri) {
-            res.daftar_kemajuan()
-            this.maju()
+            var indekss = []
+            while (this.tokenSkrg.tipe == TokenKotakKiri) {
+                res.daftar_kemajuan()
+                this.maju()
 
-            var expr = res.daftar(this.expr()) // isi indeks
-            if (res.error) return res;
-
-            if (this.tokenSkrg.tipe != TokenKotakKanan) return res.gagal(new SintaksSalah(
-                this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
-                `Dibutuhkan ']' untuk menutup indeks`
-            ));
-
-            res.daftar_kemajuan()
-            this.maju()
+                var expr = res.daftar(this.parseKotakIndeks())
+                if (res.error) return res;
+                indekss.push(expr)
+            }
 
             if (this.tokenSkrg.tipe == TokenSama) {
                 res.daftar_kemajuan()
                 this.maju()
                 var isiBaru = res.daftar(this.expr())
                 if (res.error) return res
-                return res.berhasil(new NodeIndeks(atom, expr, isiBaru))
+                return res.berhasil(new NodeIndeks(atom, indekss, true, isiBaru))
             }
-            return res.berhasil(new NodeIndeks(atom, expr))
-        } else if (this.tokenSkrg.tipe == TokenTitikIndeks) {
-            res.daftar_kemajuan()
-            this.maju()
+            return res.berhasil(new NodeIndeks(atom, indekss, true))
+        } else if (this.tokenSkrg.tipe == TokenPanah) {
+            var indekss = []
 
-            if (this.tokenSkrg.tipe != TokenIdentifier) return res.gagal(new SintaksSalah(
-                this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
-                `Dibutuhkan nama properti untuk indeks (setelah titik)`
-            ));
-            var indeks = new NodeString(this.tokenSkrg);
+            while (this.tokenSkrg.tipe == TokenPanah) {
+                res.daftar_kemajuan()
+                this.maju()
 
-            res.daftar_kemajuan()
-            this.maju()
+                if (this.tokenSkrg.tipe != TokenIdentifier && this.tokenSkrg.tipe != TokenInteger) return res.gagal(new SintaksSalah(
+                    this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+                    `Dibutuhkan nama properti untuk indeks setelah panah`
+                ));
+
+                indekss.push(this.tokenSkrg);
+                res.daftar_kemajuan()
+                this.maju()
+            }
+
+            //res.daftar_kemajuan()
+            //this.maju()
 
             if (this.tokenSkrg.tipe == TokenSama) {
                 res.daftar_kemajuan()
                 this.maju()
                 var isiBaru = res.daftar(this.expr())
                 if (res.error) return res
-                return res.berhasil(new NodeIndeks(atom, indeks, isiBaru))
+                return res.berhasil(new NodeIndeks(atom, indekss, false, isiBaru))
             }
-            return res.berhasil(new NodeIndeks(atom, indeks))
+            return res.berhasil(new NodeIndeks(atom, indekss, false))
         } else if (this.tokenSkrg.tipe == TokenTernary) {
             res.daftar_kemajuan()
             this.maju()
@@ -468,6 +471,25 @@ class Parser {
             return res.berhasil(new NodeTernary(atom, pilihanPertama, pilihanKedua))
         }
         return res.berhasil(atom)
+    }
+
+    parseKotakIndeks() {
+        var res = new HasilParse()
+
+        console.log(this.tokenSkrg.tipe)
+
+        var expr = res.daftar(this.expr()) // isi indeks
+        if (res.error) return res;
+        
+        if (this.tokenSkrg.tipe != TokenKotakKanan) return res.gagal(new SintaksSalah(
+            this.tokenSkrg.posisi_awal, this.tokenSkrg.posisi_akhir,
+            `Dibutuhkan ']' untuk menutup indeks`
+        ));
+
+        res.daftar_kemajuan()
+        this.maju()
+
+        return res.berhasil(expr)
     }
 
     atom() {

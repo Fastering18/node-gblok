@@ -23,6 +23,6 @@ print((arr[0])())
 print(([1,2])[1] = 2)
 
 lokal m = "sos"
-print((m.besar)())
+print((m->besar)())
 
 print(salah ? "sos" : salah ? "amogos" : "fully salah")

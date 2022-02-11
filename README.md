@@ -13,15 +13,15 @@
 
 > Fibbonaci function  
 ```gblk
-lokal fibbonaci = fungsi(a, n) 
-    jika n <= 0 maka
+lokal fibbonaci = fungsi(x) 
+    jika x < 2 maka
         kembali 1;
     jikatidak
-        kembali a * fibbonaci(a, n-1);
+        kembali fibbonaci(x-2) + fibbonaci(x-1);
     tutup
 tutup
 
-print(fibbonaci(5, 2)) -- 5 ^ 2
+print(fibbonaci(7)) -- 7! = 21
 ```  
 
 > Pyramid function  
@@ -47,9 +47,9 @@ lokal obj = {
     suspect: ["red", "white"]
 }
 
-print(obj -> "suspect" -> 1)
-print(obj -> "suspect" -> 2)
-print(obj -> "nama")
+print(obj -> suspect -> 1)
+print(obj -> suspect -> 2)
+print(obj -> nama)
 print(obj)
 ```
 
@@ -83,9 +83,9 @@ Run command `gblok run <filepath>`
 
 <br>
 
-### Package Manager  
+### Package Manager (beta)  
 [https://gblkpm.herokuapp.com/](https://gblkpm.herokuapp.com/)  
-Register to create account
+Create account to publish packages
 
 <br>
 

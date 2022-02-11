@@ -128,6 +128,7 @@ module.exports.installModule = async function (nama, versi, _lokd) {
             .on("finish", () => {
                 projek_deskriptor.tambahModule([nama, versi])
                 spinner.succeed(`Success installed ${chalk.blue.bold(nama)} module`)
+                //trak.end()
             })
     }).catch(e => {
         if (e.response) {

@@ -24,6 +24,6 @@ print(arr[0 + 1] + "lah")
 
 print(["sussy baka"][1])
 
-print(([["m"]][1])[1])
+print([["m"]][1][1])
 
 

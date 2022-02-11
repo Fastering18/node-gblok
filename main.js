@@ -14,6 +14,10 @@ global_tabel_simbol.tulis("print", TipeData.BuiltInFungsi.tulis)
 global_tabel_simbol.tulis("tunggu", TipeData.BuiltInFungsi.tunggu)
 global_tabel_simbol.tulis("eval", TipeData.BuiltInFungsi.eval)
 global_tabel_simbol.tulis("impor", TipeData.BuiltInFungsi.import)
+global_tabel_simbol.tulis("proses", new TipeData.Objek({
+    argumen: new TipeData.Daftar(process.argv.map(d=>new TipeData.Str(d))),
+    mati: TipeData.BuiltInFungsi.mati
+}))
 
 function buatKonteks(nkontek, lokasifile) {
     var konteks = new Konteks(typeof nkontek == "string" ? nkontek : "<program>")
