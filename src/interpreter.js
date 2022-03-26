@@ -52,7 +52,6 @@ const { RTError } = require("../lib/errors")
 
 const { Lexer } = require("./lexer")
 const { Parser } = require("./parser");
-const { NodeString } = require("../lib/nodes");
 
 class Interpreter {
     kunjungi(node, konteks) {
@@ -75,6 +74,7 @@ class Interpreter {
         var nama_var = node.nama_token_variabel.value
         var isi = konteks.TabelSimbol.dapat(nama_var)
 
+        //console.log(konteks.TabelSimbol)
         if (isi == undefined)
             return res.gagal(
                 new RTError(
@@ -493,7 +493,9 @@ class Interpreter {
         var nama_fungsi = node.nama_token_variabel ? node.nama_token_variabel.value : null;
         var isi_node = node.isi_node
         var nama_parameter = node.nama_parameter_token.map(m => m.value)
-        var isi_fungsi = new Fungsi(nama_fungsi, isi_node, nama_parameter, node.harus_return_null).atur_konteks(konteks).atur_posisi(node.posisi_awal, node.posisi_akhir)
+        var isi_fungsi = new Fungsi(nama_fungsi, isi_node, nama_parameter, node.harus_return_null, konteks)
+        .atur_konteks(konteks)
+        .atur_posisi(node.posisi_awal, node.posisi_akhir)
 
         if (node.nama_token_variabel) konteks.TabelSimbol.tulis(nama_fungsi, isi_fungsi)
 
@@ -525,6 +527,7 @@ class Interpreter {
         ))
         var hasil = res.daftar(isi_untuk_dipanggil.esekusi(parameters, { Interpreter, Lexer, Parser, konteks }))
         if (res.harus_return()) return res;
+        
         hasil = hasil.salin().atur_posisi(node.posisi_awal, node.posisi_akhir).atur_konteks(konteks)
         return res.berhasil(hasil)
     }

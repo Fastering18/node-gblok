@@ -4,19 +4,60 @@ const { Interpreter, TabelSimbol, Konteks } = require("./src/interpreter");
 const childProcess = require("child_process");
 const TipeData = require("./lib/TipeData");
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
+const { HasilRuntime } = require("./lib/Runtime");
 
+// inti
 var global_tabel_simbol = new TabelSimbol()
 global_tabel_simbol.tulis("salah", TipeData.BooLean.salah)
 global_tabel_simbol.tulis("benar", TipeData.BooLean.benar)
 global_tabel_simbol.tulis("nil", TipeData.Angka.nil)
 global_tabel_simbol.tulis("print", TipeData.BuiltInFungsi.tulis)
+global_tabel_simbol.tulis("input", TipeData.BuiltInFungsi.input)
 global_tabel_simbol.tulis("tunggu", TipeData.BuiltInFungsi.tunggu)
 global_tabel_simbol.tulis("eval", TipeData.BuiltInFungsi.eval)
 global_tabel_simbol.tulis("impor", TipeData.BuiltInFungsi.import)
 global_tabel_simbol.tulis("proses", new TipeData.Objek({
     argumen: new TipeData.Daftar(process.argv.map(d=>new TipeData.Str(d))),
-    mati: TipeData.BuiltInFungsi.mati
+    mati: TipeData.BuiltInFungsi.mati,
+    binding: TipeData.BuiltInFungsi.binding
+}))
+
+// module matematika
+global_tabel_simbol.tulis("mtk", new TipeData.Objek({
+    jumlah: TipeData.buatFungsi("penjumlahan", ["array_angka"], function penjumlahan(konteks) {
+        var res = new HasilRuntime()
+        let daftarAngka = konteks.TabelSimbol.dapat("array_angka")
+
+        TipeData.assertTipe(res, daftarAngka, TipeData.Daftar, 1)
+        if (res.harus_return()) return res;
+
+        let jumlah = daftarAngka.nilai.reduce((a,b)=>a+b.nilai,0)
+        return res.berhasil(new TipeData.Angka(jumlah))
+    }),
+    akar2: TipeData.buatFungsi("akar_kuadrat", ["angka"], function penjumlahan(konteks) {
+        var res = new HasilRuntime()
+        let angka = konteks.TabelSimbol.dapat("angka")
+
+        TipeData.assertTipe(res, angka, TipeData.Angka, 1)
+        if (res.harus_return()) return res;
+
+        let jumlah = Math.sqrt(angka.nilai)
+        return res.berhasil(new TipeData.Angka(jumlah))
+    }),
+    pangkat: TipeData.buatFungsi("pangkat2", ["angka", "pangkat"], function penjumlahan(konteks) {
+        var res = new HasilRuntime()
+        let angka = konteks.TabelSimbol.dapat("angka"),
+            pangkat = konteks.TabelSimbol.dapat("pangkat");
+
+        TipeData.assertTipe(res, angka, TipeData.Angka, 1)
+        if (res.harus_return()) return res;
+        TipeData.assertTipe(res, pangkat, TipeData.Angka, 2)
+        if (res.harus_return()) return res;
+
+        let jumlah = angka.nilai ** pangkat.nilai
+        return res.berhasil(new TipeData.Angka(jumlah))
+    })
 }))
 
 function buatKonteks(nkontek, lokasifile) {
@@ -125,7 +166,7 @@ function REPLMode(readlineInterface, { xKonteks = buatKonteks(), xInterpreter = 
     readlineInterface.question("gblk> ", function (script) {
         const lex = new Lexer("<stdin>", script.toString())
         const tokens = lex.buatToken()
-        if (tokens.err) return repeatREPL({readlineInterface, xKonteks, xInterpreter, hasil: tokens})
+        if (tokens.error) return repeatREPL({readlineInterface, xKonteks, xInterpreter, hasil: tokens})
 
         const nodes = new Parser(tokens.hasil).parse()
         if (nodes.error) return repeatREPL({readlineInterface, xKonteks, xInterpreter, hasil: nodes})

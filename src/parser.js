@@ -476,8 +476,6 @@ class Parser {
     parseKotakIndeks() {
         var res = new HasilParse()
 
-        console.log(this.tokenSkrg.tipe)
-
         var expr = res.daftar(this.expr()) // isi indeks
         if (res.error) return res;
         
@@ -1323,7 +1321,6 @@ class Parser {
             this.skip_nl()
             metodeclass.push(new NodeBuatFungsi(nama_fungsi, nama_parameter, isistatement, false))
         }
-        console.log(metodeclass)
 
         if (!(this.tokenSkrg.sama_dengan(TokenKeyword, 'tutup')))
             return res.gagal(new SintaksSalah(

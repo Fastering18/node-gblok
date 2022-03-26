@@ -28,7 +28,7 @@ print(pcall(fungsi()
     pprint(sos)
 tutup))
 
-print((str->jadiString)())
+print((str->teks)())
 
 print(tipe salah)
 print((tipe(1 + 2) == "Angka") ? "sus" : "not sus")

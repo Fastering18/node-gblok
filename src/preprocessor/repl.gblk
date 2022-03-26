@@ -1,0 +1,26 @@
+fungsi pcall(fn)
+    lokal hasil = nil
+    lokal berhasil = salah
+    coba
+        hasil = fn()
+        berhasil = benar
+    tangkap err
+        hasil = err
+    tutup
+    kembali [berhasil, hasil]
+tutup
+
+fungsi repl()
+    lokal res = pcall(fungsi()
+        lokal script = input("> ")
+        kembali eval(script)
+    tutup)
+
+    jika res[2] maka
+        print(res[2])
+    tutup
+
+    kembali repl()
+tutup
+
+repl()

@@ -87,6 +87,7 @@ class Lexer {
                 if (minusorpanah.token instanceof Token) {
                     tokens.push(minusorpanah.token)
                 } else if (minusorpanah.error) {
+                    //console.log(minusorpanah)
                     return {hasil: null, error: minusorpanah.error}
                 }
             } else if (this.karakterSkrg == "~") {

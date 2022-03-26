@@ -1,38 +1,20 @@
-fungsi wiggility(n, str)
-     lokal s = "";
-     untuk tb = 1 ke n lakukan
-       s = s + str + ((tb == n) ? "" : ("\n" + "\t" * tb))
+-- CLOSURES
+
+fungsi b()
+     lokal e = 10
+
+     fungsi c() 
+          fungsi d() print(e) tutup
+          kembali d
      tutup
-     untuk tb = 0 ke n + 1 lakukan
-       s = s + str + ((tb == n) ? "" : ("\n" + "\t" * (n - tb)))
-     tutup
-     kembali s
+     kembali c
 tutup
 
-fungsi uler(tinggi, lebar, teks)
-   lokal hasil = ""
-   untuk i = 1 ke tinggi + 1 lakukan
-      hasil = hasil + wiggility(lebar - 1, teks) + "\n"
-   tutup
-   hasil = hasil + teks
-   kembali hasil
-tutup
+--[[
+  lokal Lexer = (proses->binding)("../src/lexer.js")
+lokal res = (Lexer->Lexer)("sos", "print")
+print(res)
+]]
 
-print(uler(2, 3, "wiggle"))
-
-
-lokal obj = {
-  "12": "sus", 
-  abc: {bb: "sas"}, 
-  data: fungsi() -> "sas" , 
-  ["sus" * 3]: benar,
-  "a": 1,
-  "b": 2
-}
-
-print(obj)
-print(obj -> abc -> bb)
-print(obj["abc"]["bb"])
-
-lokal m = [1,2,3]
-print(m -> 1)
+lokal res = (proses->binding)("../regexp")
+print(res)

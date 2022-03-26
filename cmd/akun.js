@@ -48,6 +48,7 @@ module.exports.loginInput = function (rinput = readline.createInterface({
             rinput.output.write(stringToWrite);
     };
 
+    console.log(chalk.black.bold.bgBlue('        Login        '));
     rinput.question("Email: ", function (email) {
         rinput.stdoutMuted = true;
         rinput.query = "Password: "

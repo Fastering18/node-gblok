@@ -24,6 +24,26 @@ print(arr[0 + 1] + "lah")
 
 print(["sussy baka"][1])
 
-print([["m"]][1][1])
+print((mtk->jumlah)([99,1000,2]))
+print((mtk->akar2)(100))
+print((mtk->pangkat)(2, 3))
 
+lokal wiggle = fungsi(w, max_x, max_y, n, wave, rev) 
+  n = n atau 0
+  rev = rev atau salah
+  wave = wave atau 1
+  jika wave>max_y maka
+    kembali 1
+  tutup
+  jika (n>=max_x) atau (n<=0) maka
+    wave = wave + 1
+    rev = n>=max_x
+  tutup
+  print(" " * n + w) 
+  --print(n +"=="+ max_x + " wv: " + wave + "==" + max_y) 
+  --print((n>=max_x) atau (n<=0)) 
+  --tunggu(1) 
+  kembali wiggle(w, max_x, max_y, rev?n-1:n+1, wave, rev) 
+tutup
 
+print(wiggle("sus", 2, 3))

@@ -4,6 +4,7 @@ const { Parser } = require("./src/parser")
 const { Interpreter, TabelSimbol, Konteks } = require("./src/interpreter")
 const { BooLean } = require("./lib/TipeData")
 const { executeFileSync, executeSync, runTerminal } = require("./main")
+const { downloadModule } = require("./cmd/projek")
 //const glfw = require('glfw-raub');
 
 var hasil = executeFileSync("./test/index.gblk")

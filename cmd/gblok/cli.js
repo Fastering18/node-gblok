@@ -2,13 +2,14 @@
 const prog = require('caporal');
 const readline = require("readline")
 const path = require("path")
-const warna = require("../warna");
+const chalk = require("chalk");
 const compiler = require("../../main");
 const utility = require("../utility");
+const langinfo = require("../../package.json")
 
 prog
   .name("gblok [GBLK Compiler]")
-  .version('0.0.225')
+  .version(langinfo.version)
   .command('run', 'Execute a gblk program')
   .argument('[filepath]', 'File path to run', prog.STRING)
   .option("--tanpa <komponen>", "Opsi untuk menghilangkan beberapa komponen", prog.REPEATABLE, [], false)
@@ -21,9 +22,9 @@ prog
       //console.log(out.hasil.modules);
     }).catch(err => {
       hasErr = true
-      console.log(`\n${warna.Ungu("Terdapat error saat mengesekusi file:")}\n\t${warna.Merah(err.toString())}`)
+      console.log(`\n${chalk.magenta.bold("Terdapat error saat mengesekusi file:")}\n\t${chalk.red(err.toString())}`)
     }).finally((_) => {
-      if (!options.tanpa.includes("waktu") && !hasErr) console.log(warna.Bold(`\tScript telah mengabiskan waktu: ${new Date(new Date() - mulai).getMilliseconds()}ms`))
+      if (!options.tanpa.includes("waktu") && !hasErr) console.log(chalk.bold(`\tScript telah mengabiskan waktu: ${new Date(new Date() - mulai).getMilliseconds()}ms`))
     })
   })
   .command('repl', 'Run gblk in REPL mode')

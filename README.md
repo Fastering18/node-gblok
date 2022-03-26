@@ -1,12 +1,18 @@
-<p align="center">
+<div align="center">
+<br />
+<p>
 <h2>GBLK language written in Node.js</h2>
-<br>
 <img src="https://cdn.discordapp.com/attachments/783614662960349236/882809593963634698/android-chrome-192x192.png" alt="gblk-icon">
-<br>
-<img src="https://api.travis-ci.org/Fastering18/Membuat-Bahasa-Pemrograman.svg?branch=main" alt="travisci-test">  
+</p>
+<p>
+<a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/travis/Fastering18/Membuat-Bahasa-Pemrograman/main?label=test" alt="travisci-test"></a> 
+<a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/npm/dt/node-gblk.svg?maxAge=3600" alt="npm-download"></a>
+<a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/npm/v/node-gblk.svg?maxAge=3600&label=versi" alt="npm-versi"></a>
+<a href="https://gblkpm.herokuapp.com"><img alt="Website" src="https://img.shields.io/website?maxAge=3600&down_message=Down&label=package%20manager&up_message=Aktif&url=https%3A%2F%2Fgblkpm.herokuapp.com"></a>
+</p> 
 
 <p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
-</p>
+</div>
 
 
 <hr>
@@ -21,7 +27,7 @@ lokal fibbonaci = fungsi(x)
     tutup
 tutup
 
-print(fibbonaci(7)) -- 7! = 21
+print(fibbonaci(7)) -- 21
 ```  
 
 > Pyramid function  
