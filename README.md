@@ -13,7 +13,7 @@
 <p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
 </div>
 
-> We're currently working on gblk edition-2 as compiled language
+> **🚨 We're currently working on gblk edition-2 as compiled language! join our discrd server for more information.**
 
 <hr>
 
@@ -21,7 +21,7 @@
 <details>
 <summary><bold>#1 Fibonacci function</bold></summary>
 <br>
-Recursive fibonacci function written in GBLK
+Recursive fibonacci function written in GBLK  
 <br><br>
 <pre>
 
@@ -40,7 +40,7 @@ print(fibbonaci(7)) -- 21
 <details>
 <summary><bold>#2 Pyramid function</bold></summary>
 <br>
-Terminal output text shape with loops
+Terminal output text shape with loops  
 <br><br>
 <pre>
 lokal piramid = fungsi(r)
@@ -59,7 +59,7 @@ print(piramid(10))
 <details>
 <summary><bold>#3 Dynamic objects</bold></summary>
 <br>
-A node.js-like objects
+A node.js-like objects  
 <br><br>
 <pre>
 lokal obj = {
