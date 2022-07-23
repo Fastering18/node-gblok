@@ -1,0 +1,36 @@
+lokal simpleio = {}
+
+--[[
+    @Fastering18
+    Penggunaan:
+
+    print((simpleio->warnai)("\97mogus", simpleio->Warna->Ungu))
+    print((simpleio->warnai)("hai", simpleio->Warna->Hijau))
+
+    clear terminal:
+    (simpleio->clear)()
+]]
+
+simpleio->Warna = {
+    'Hitam' : 30,
+    'Merah' : 31,
+    'Hijau' : 32,
+    'Kuning': 33,
+    'Biru'  : 34,
+    'Ungu'  : 35,
+    'Toska' : 36, -- cyan
+    'Putih' : 37
+}
+
+simpleio->input = input
+simpleio->output = print
+
+simpleio->warnai = fungsi(txt, color)
+    kembali "[" + color + "m" + txt + "[0m"
+tutup
+
+simpleio->clear = fungsi()
+    print("[2J[u")
+tutup
+
+ekspor simpleio

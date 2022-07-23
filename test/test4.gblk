@@ -17,4 +17,4 @@ print(res)
 ]]
 
 lokal res = (proses->binding)("../regexp")
-print(res)
+print(res->DigitString)

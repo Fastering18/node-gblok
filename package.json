@@ -1,6 +1,6 @@
 {
   "name": "node-gblk",
-  "version": "0.0.281b",
+  "version": "0.0.282b",
   "description": "GBLK language fully written in node.js",
   "main": "main.js",
   "types": "src/typings/defs.d.ts",

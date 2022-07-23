@@ -1,6 +1,6 @@
 /**
  * Interpreter class, esekusi array perintah dijalankan oleh nodejs
- * compiled language
+ * interpreted language
  */
 
 const {

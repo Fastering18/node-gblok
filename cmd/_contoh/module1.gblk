@@ -1,23 +1,23 @@
 lokal modules = {}
 
 --[[
-    fibbonaci rekursive (loop)
+    pangkat rekursive (loop)
 ]]
-modules.fibbonaci = fungsi(a, n) 
+modules->pangkat = fungsi(a, n) 
     jika n <= 0 maka
         kembali 1;
     jikatidak
-        kembali a * (modules.fibbonaci)(a, n-1);
+        kembali a * (modules->pangkat)(a, n-1);
     tutup
 tutup
 
---print((modules.fibbonaci)(5, 2)) == 5 ^ 2
+--print((modules->pangkat)(5, 2)) == 5 ^ 2
 
 
 --[[
       piramid (segitiga)
 ]]
-modules.piramid = fungsi(r)
+modules->piramid = fungsi(r)
     jika r < 3 maka kembali "setidaknya row harus lebih dari 2" tutup
     lokal hasil = ""
     untuk i = 0 ke r lakukan
@@ -31,7 +31,7 @@ tutup
     Try catch block
     custom pcall dari lua
 ]]
-modules.pcall = fungsi pcall(fn)
+modules->pcall = fungsi pcall(fn)
     lokal hasil = nil
     lokal berhasil = salah
 

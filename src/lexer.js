@@ -77,7 +77,7 @@ class Lexer {
                 tokens.push(this._daftarlokal(tokens))
             } else if ('"\''.includes(this.karakterSkrg)) {
                 const [error, x_tokn] = this._buatString()
-                if (error) return {hasil: null, error};
+                if (error) return { hasil: null, error };
                 tokens.push(x_tokn)
             } else if (this.karakterSkrg == "+") {
                 tokens.push(new Token(TokenTambah, null, this.posisi))
@@ -88,7 +88,7 @@ class Lexer {
                     tokens.push(minusorpanah.token)
                 } else if (minusorpanah.error) {
                     //console.log(minusorpanah)
-                    return {hasil: null, error: minusorpanah.error}
+                    return { hasil: null, error: minusorpanah.error }
                 }
             } else if (this.karakterSkrg == "~") {
                 tokens.push(new Token(TokenXOR, null, this.posisi))
@@ -118,8 +118,8 @@ class Lexer {
                 tokens.push(new Token(TokenKotakKanan, null, this.posisi))
                 this.maju()
             } else if (this.karakterSkrg == "!") {
-                var {token, error} = this.buat_tidak_sama()
-                if (error) return {hasil: null, error}
+                var { token, error } = this.buat_tidak_sama()
+                if (error) return { hasil: null, error }
                 tokens.push(token)
             } else if (this.karakterSkrg == "=") {
                 tokens.push(this.buat_kesamaan())
@@ -149,181 +149,193 @@ class Lexer {
                 var posisi_awal = this.posisi.salin()
                 var karakter = this.karakterSkrg
                 this.maju()
-                return {hasil: null, error: new KarakterSalah(posisi_awal, this.posisi, '"' + karakter + '"')}
+                return { hasil: null, error: new KarakterSalah(posisi_awal, this.posisi, '"' + karakter + '"') }
             }
         }
 
         tokens.push(new Token(TokenEOF, null, this.posisi))
-        return {hasil: tokens, error: null}//, null
+        return { hasil: tokens, error: null }//, null
     }
 
     _buatAngka() {
         var angkaString = ""
-		var ada_titik = false
-		var ada_e = false
-		var posisi_awal = this.posisi.salin()
+        var ada_titik = false
+        var ada_e = false
+        var posisi_awal = this.posisi.salin()
 
-		while (this.karakterSkrg && (DigitString + ".e").includes(this.karakterSkrg)) {
-			if (this.karakterSkrg == "e") {
-				if (ada_e) break;
-				ada_e = true;
+        while (this.karakterSkrg && (DigitString + ".e").includes(this.karakterSkrg)) {
+            if (this.karakterSkrg == "e") {
+                if (ada_e) break;
+                ada_e = true;
             } else if (this.karakterSkrg == ".") {
-				if (ada_titik) break;
-				ada_titik = true;
-			} 
-			angkaString += this.karakterSkrg;
-            
-			this.maju()
+                if (ada_titik) break;
+                ada_titik = true;
+            }
+            angkaString += this.karakterSkrg;
+
+            this.maju()
         }
 
-		if (!ada_titik) {
-			return new Token(TokenInteger, Number(angkaString), posisi_awal, this.posisi)
+        if (!ada_titik) {
+            return new Token(TokenInteger, Number(angkaString), posisi_awal, this.posisi)
         } else {
-			return new Token(TokenFloat, Number(angkaString), posisi_awal, this.posisi)
+            return new Token(TokenFloat, Number(angkaString), posisi_awal, this.posisi)
         }
     }
 
     _buatString() {
         var str = ""
-		var konstruktor = this.karakterSkrg
-		var posisi_awal = this.posisi.salin()
-		var escape_karakter = false
-		this.maju()
+        var konstruktor = this.karakterSkrg
+        var posisi_awal = this.posisi.salin()
+        var escape_karakter = false
+        this.maju()
 
         //DaftarEscapeKarakter
         while (this.karakterSkrg && (this.karakterSkrg != konstruktor || escape_karakter)) {
             if (escape_karakter) {
-                str += DaftarEscapeKarakter[this.karakterSkrg] || this.karakterSkrg
-                escape_karakter = false
+                if (!isNaN(this.karakterSkrg)) {
+                    var cp = "" // code points
+                    while (!isNaN(this.karakterSkrg)) {
+                        cp += this.karakterSkrg
+                        this.maju()
+                    }
+                    str += String.fromCharCode(parseInt(cp))
+                    continue;
+                } else {
+                    str += DaftarEscapeKarakter[this.karakterSkrg] || this.karakterSkrg
+                    escape_karakter = false
+                }
             } else {
                 if (this.karakterSkrg == "\\") {
-					escape_karakter = true
-				} else {
-					str += this.karakterSkrg
+                    escape_karakter = true
+                } else {
+                    str += this.karakterSkrg
                 }
             }
             this.maju()
         }
-        
+
         if (this.karakterSkrg !== konstruktor) return [new KarakterYangDibutuhkan(posisi_awal, this.posisi, `Dibutuhkan ${konstruktor} untuk menutup string`), null]
 
         this.maju()
-		return [null, new Token(TokenString, str, posisi_awal, this.posisi)]
+        return [null, new Token(TokenString, str, posisi_awal, this.posisi)]
     }
 
     _daftarlokal(tokens) {
         var identitas_string = ""
-		var posisi_awal = this.posisi.salin()
+        var posisi_awal = this.posisi.salin()
 
         while (this.karakterSkrg && (hurufdigitgabung + "_").includes(this.karakterSkrg.toLowerCase())) {
-			identitas_string += this.karakterSkrg;
-			this.maju()
+            identitas_string += this.karakterSkrg;
+            this.maju()
         }
 
-		var tipe_token = Konstruktor.includes(identitas_string) ? TokenKeyword : TokenIdentifier //TokenKeyword if identitas_string in Konstruktor else TokenIdentifier
-		
+        var tipe_token = Konstruktor.includes(identitas_string) ? TokenKeyword : TokenIdentifier //TokenKeyword if identitas_string in Konstruktor else TokenIdentifier
+
         //while (" \t".includes(this.karakterSkrg)) this.maju();
-        
+
         /*if (tipe_token == TokenIdentifier && this.karakterSkrg == "[") {
             console.log(this.karakterSkrg)
             tokens.push(TokenKotakIndeksKiri)
         }*/
 
-		return new Token(tipe_token, identitas_string, posisi_awal, this.posisi)
+        return new Token(tipe_token, identitas_string, posisi_awal, this.posisi)
     }
 
     buat_minus_atau_panah_atau_komentar() {
         var tipe_token = TokenKurang
-		var posisi_awal = this.posisi.salin()
-		this.maju()
+        var posisi_awal = this.posisi.salin()
+        this.maju()
 
-        if (this.karakterSkrg == ">" ) {
-			this.maju()
-			tipe_token = TokenPanah
+        if (this.karakterSkrg == ">") {
+            this.maju()
+            tipe_token = TokenPanah
         } else if (this.karakterSkrg == "-") {
-			const {error} = this.skip_komentar()
-			if (error) return {token: null, error}
+            const { error } = this.skip_komentar()
+            if (error) return { token: null, error }
             return {}
         }
 
-		return {token: new Token(tipe_token, null, posisi_awal, this.posisi), error: null}
+        return { token: new Token(tipe_token, null, posisi_awal, this.posisi), error: null }
     }
 
     buat_tidak_sama() {
         var posisi_awal = this.posisi.salin()
-		this.maju()
+        this.maju()
 
-		if (this.karakterSkrg == "=") {
-			this.maju()
-            return {token: new Token(TokenTidakSama, null, posisi_awal, this.posisi), error: null}
+        if (this.karakterSkrg == "=") {
+            this.maju()
+            return { token: new Token(TokenTidakSama, null, posisi_awal, this.posisi), error: null }
         }
 
         this.maju()
-        return {token: null, error: new KarakterYangDibutuhkan(posisi_awal, this.posisi, "'=' (setelah '!') operator")}
+        return { token: null, error: new KarakterYangDibutuhkan(posisi_awal, this.posisi, "'=' (setelah '!') operator") }
     }
 
     buat_kesamaan() {
         var tipe_token = TokenSama
-		var posisi_awal = this.posisi.salin()
-		this.maju()
+        var posisi_awal = this.posisi.salin()
+        this.maju()
 
-		if (this.karakterSkrg == "=") {
-			this.maju()
-			tipe_token = TokenSamaSama
+        if (this.karakterSkrg == "=") {
+            this.maju()
+            tipe_token = TokenSamaSama
         }
 
-		return new Token(tipe_token, null, posisi_awal, this.posisi)
+        return new Token(tipe_token, null, posisi_awal, this.posisi)
     }
 
     buat_kurang_dari() {
         var tipe_token = TokenKurangDari
-		var posisi_awal = this.posisi.salin()
-		this.maju()
+        var posisi_awal = this.posisi.salin()
+        this.maju()
 
-		if (this.karakterSkrg == "=") {
-			this.maju()
-			tipe_token = TokenKurangAtauSama
+        if (this.karakterSkrg == "=") {
+            this.maju()
+            tipe_token = TokenKurangAtauSama
         }
 
-		return new Token(tipe_token, null, posisi_awal, this.posisi)
+        return new Token(tipe_token, null, posisi_awal, this.posisi)
     }
 
     buat_lebih_dari() {
         var tipe_token = TokenLebihDari
-		var posisi_awal = this.posisi.salin()
-		this.maju()
+        var posisi_awal = this.posisi.salin()
+        this.maju()
 
-		if (this.karakterSkrg == "=") {
-			this.maju()
-			tipe_token = TokenLebihAtauSama
+        if (this.karakterSkrg == "=") {
+            this.maju()
+            tipe_token = TokenLebihAtauSama
         }
 
-		return new Token(tipe_token, null, posisi_awal, this.posisi)
+        return new Token(tipe_token, null, posisi_awal, this.posisi)
     }
 
     skip_komentar() {
         var komen_blok = false
-		var posisi_awal = this.posisi.salin()
-		this.maju()
+        var posisi_awal = this.posisi.salin()
+        this.maju()
 
-		if (this.karakterSkrg == "[") {
-			komen_blok = true
-			this.maju()
-			if (this.karakterSkrg == "[") {
-				while (this.karakterSkrg != ']' && this.karakterSkrg) this.maju();
-				this.maju()
-				if (this.karakterSkrg != "]") {
-					return {token: null, error: new KarakterYangDibutuhkan(
-						posisi_awal, this.posisi, "Dibutuhkan ']'"
-					)}
+        if (this.karakterSkrg == "[") {
+            komen_blok = true
+            this.maju()
+            if (this.karakterSkrg == "[") {
+                while (this.karakterSkrg != ']' && this.karakterSkrg) this.maju();
+                this.maju()
+                if (this.karakterSkrg != "]") {
+                    return {
+                        token: null, error: new KarakterYangDibutuhkan(
+                            posisi_awal, this.posisi, "Dibutuhkan ']'"
+                        )
+                    }
                 }
             }
             this.maju()
         } else {
-			while (this.karakterSkrg !== '\n' && this.karakterSkrg) this.maju();
+            while (this.karakterSkrg !== '\n' && this.karakterSkrg) this.maju();
         }
-		
-        return {token: null, error: null}
+
+        return { token: null, error: null }
     }
 }
 

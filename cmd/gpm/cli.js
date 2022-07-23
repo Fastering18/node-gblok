@@ -5,10 +5,11 @@ const warna = require("../warna");
 const compiler = require("../../main");
 const utility = require("../utility");
 const akunManager = require("../akun");
+const langinfo = require("../../package.json")
 
 prog
   .name("GPM [GBLK Package Manager]")
-  .version('0.0.1')
+  .version(langinfo.version)
   .command('init', 'Create example project')
   .argument('[filePath]', 'File path to be written', prog.STRING)
   .option("-y", "Skip pertanyaan")

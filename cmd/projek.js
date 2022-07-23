@@ -83,7 +83,7 @@ class Projek {
 function downloadModule(nama, versi) {
     return axios({
         method: "GET",
-        responseType: "stream", //'arraybuffer',
+        responseType: "arraybuffer", //'arraybuffer',
         url: `${enumItems.PKGManager.baseURL}${util.format(enumItems.PKGManager.installPackageURL, nama, versi)}`,
     })
 }

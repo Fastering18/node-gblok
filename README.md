@@ -1,5 +1,4 @@
 <div align="center">
-<br />
 <p>
 <h2>GBLK language written in Node.js</h2>
 <img src="https://cdn.discordapp.com/attachments/783614662960349236/882809593963634698/android-chrome-192x192.png" alt="gblk-icon">
@@ -14,11 +13,18 @@
 <p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
 </div>
 
+> We're currently working on gblk edition-2 as compiled language
 
 <hr>
 
-> Fibbonaci function  
-```gblk
+<h2>Examples</h2>
+<details>
+<summary><bold>#1 Fibonacci function</bold></summary>
+<br>
+Recursive fibonacci function written in GBLK
+<br><br>
+<pre>
+
 lokal fibbonaci = fungsi(x) 
     jika x < 2 maka
         kembali 1;
@@ -28,10 +34,15 @@ lokal fibbonaci = fungsi(x)
 tutup
 
 print(fibbonaci(7)) -- 21
-```  
+</pre>
+</details>
 
-> Pyramid function  
-```gblk
+<details>
+<summary><bold>#2 Pyramid function</bold></summary>
+<br>
+Terminal output text shape with loops
+<br><br>
+<pre>
 lokal piramid = fungsi(r)
     jika r < 3 maka kembali "row must higher than 2" tutup
     lokal hasil = ""
@@ -42,10 +53,15 @@ lokal piramid = fungsi(r)
 tutup
 
 print(piramid(10))
-```
+</pre>
+</details>
 
-> Dynamic objects  
-```gblk
+<details>
+<summary><bold>#3 Dynamic objects</bold></summary>
+<br>
+A node.js-like objects
+<br><br>
+<pre>
 lokal obj = {
     "sus": benar,
     nama: "amogus",
@@ -57,9 +73,12 @@ print(obj -> suspect -> 1)
 print(obj -> suspect -> 2)
 print(obj -> nama)
 print(obj)
-```
+</pre>
+</details>
 
-### Compile with node.js  
+<br/>
+
+## API  
 ```js
 const gblk = require("node-gblk")
 
@@ -67,7 +86,9 @@ const skrip = `print("Hello world")`
 gblk.runTerminal(skrip, "./indeks.gblk").then(console.log)
 ```  
 
-### CLI usage  
+<br/>
+
+## CLI Usage  
 Install package as global `npm i -g node-gblk`  
 Run command `gblok run <filepath>`  
 
@@ -89,7 +110,7 @@ Run command `gblok run <filepath>`
 
 <br>
 
-### Package Manager (beta)  
+## Package Manager (beta)  
 [https://gblkpm.herokuapp.com/](https://gblkpm.herokuapp.com/)  
 Create account to publish packages
 

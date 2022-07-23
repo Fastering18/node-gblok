@@ -117,25 +117,31 @@ module.exports.installModule = async function (nama, versi, _lokd) {
     const gblk_modules_dir = path.join(cwdFolder, "./gblk_modules")
     const projek_dir = path.join(gblk_modules_dir, nama)
     const projek_deskriptor = this.getPackageFromDirectory(cwdFolder)
-    const spinner = ora(`Installing ${chalk.blue.bold(nama)} module...`).start()
+    const spinner = ora(`Downloading ${chalk.blue.bold(nama)} module...`).start()
+
+    var startTime = Date.now()
 
     if (!fs.existsSync(gblk_modules_dir)) fs.mkdirSync(gblk_modules_dir, { recursive: true });
     ProjekLib.downloadModule(nama, versi).then(d => {
         //console.log(d.data)
+        spinner.info(`Module '${chalk.blue.bold(nama)}' downloaded`)
+        spinner.text = "Extracting files..."
         if (!fs.existsSync(projek_dir)) fs.mkdirSync(projek_dir, {recursive: true});
         const trak = streamifier.createReadStream(unzipSync(d.data))
             .pipe(tar.x({ C: projek_dir}))
             .on("finish", () => {
                 projek_deskriptor.tambahModule([nama, versi])
-                spinner.succeed(`Success installed ${chalk.blue.bold(nama)} module`)
+                spinner.succeed(`Success installed ${chalk.blue.bold(nama)} module ${chalk.white.bgBlack.bold("[⏳+" + ((Date.now() - startTime) / 1000).toFixed(3) + "s]")}`)
                 //trak.end()
             })
     }).catch(e => {
         if (e.response) {
             spinner.fail(`Failed to install the module, ${JSON.parse(e.response.data.toString()).message}`)
         } else {
-            spinner.fail(`Failed to install the module, ${e.statusText}`)
+            if (e.statusText) spinner.fail(`Failed to install the module, ${e.statusText}`)
+            else spinner.fail(e.message);
         }
+        spinner.warn("If this is a bug, try updating node-gblk to 'latest'.")
     })
 }
 

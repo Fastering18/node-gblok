@@ -1,0 +1,9 @@
+{
+   "nama": "simpleio",
+   "versi": "0.0.1",
+   "deskripsi": "simple input-output library",
+   "script": "index.gblk",
+   "author": "Fastering18",
+   "lisensi": "MIT",
+   "modules": {}
+}

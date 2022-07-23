@@ -1,9 +1,9 @@
 {
     "nama": "nama-module",
     "versi": "0.0.1",
-    "deskripsi": "mogus mogus test lib",
+    "deskripsi": "",
     "script": "index.gblk",
-    "author": "Username",
+    "author": "<Username>",
     "lisensi": "MIT",
     "modules": {}
  }

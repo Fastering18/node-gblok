@@ -12,6 +12,7 @@ prog
   .version(langinfo.version)
   .command('run', 'Execute a gblk program')
   .argument('[filepath]', 'File path to run', prog.STRING)
+  .argument('[program-args...]', 'Additional args to be passed into program')
   .option("--tanpa <komponen>", "Opsi untuk menghilangkan beberapa komponen", prog.REPEATABLE, [], false)
   .action(function (args, options, logger) {
     if (typeof (options.tanpa) != "object") options.tanpa = [options.tanpa];
