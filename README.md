@@ -13,7 +13,8 @@
 <p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
 </div>
 
-> **🚨 We're currently working on gblk edition-2 as compiled language! join our discrd server for more information.**
+> **🚨 We're currently working on gblk edition-2 as compiled language!  
+> join our discord server for more information.**
 
 <hr>
 
@@ -24,7 +25,6 @@
 Recursive fibonacci function written in GBLK  
 <br><br>
 <pre>
-
 lokal fibbonaci = fungsi(x) 
     jika x < 2 maka
         kembali 1;
