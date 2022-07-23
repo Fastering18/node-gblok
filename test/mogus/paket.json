@@ -1,7 +1,10 @@
 {
-    "nama": "nama-module",
-    "versi": "0.0.1",
-    "deskripsi": "mogus mogus test lib",
-    "script": "index.gblk",
-    "modules": {}
+   "nama": "nama-module",
+   "versi": "0.0.1",
+   "deskripsi": "mogus mogus test lib",
+   "script": "index.gblk",
+   "lisensi": "MIT",
+   "modules": {
+      "simpleio": "0.0.1"
+   }
 }

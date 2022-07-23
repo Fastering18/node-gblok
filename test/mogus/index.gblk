@@ -1,4 +1,10 @@
 lokal lib1 = impor("./module1.gblk")
+lokal io = impor("simpleio")
 
-print("5 ^ 2 =")
+print("5 ^ 2 =", "?")
 print((lib1->pangkat)(5, 2))
+print((io->warnai)("Among Us", io->Warna->Merah), "normal", "ok")
+
+print(proses->argumen)
+
+input("press Enter to exit the program...")
