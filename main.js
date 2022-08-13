@@ -7,8 +7,6 @@ const fs = require("fs");
 const path = require("path");
 const { HasilRuntime } = require("./lib/Runtime");
 
-// inti
-
 function buatKonteks(nkontek, lokasifile) {
     var konteks = TipeData.defaultKonteks(nkontek)
     konteks.lokasi = lokasifile
