@@ -51,13 +51,13 @@ class Projek {
 
     }
 
-    upload(tokn) {
+    upload(tokn, baseURL = enumItems.PKGManager.baseURL) {
         const form = new FormData();
         form.append('file', fs.createReadStream(`${this.nama}-${this.versi}.tgz`));
 
         return axios({
             method: "post",
-            url: `${enumItems.PKGManager.baseURL}${enumItems.PKGManager.publishPackageURL}`,
+            url: `${baseURL}${enumItems.PKGManager.publishPackageURL}`,
             data: form,
             headers: { ...form.getHeaders(), Authorization: tokn }
         })

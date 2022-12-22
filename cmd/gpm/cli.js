@@ -31,22 +31,22 @@ prog
   .action(function(args, opt) {
     utility.uncompressTar(args.direktori, opt.o)
   })
-  .command('install', 'install module dari https://gblkpm.herokuapp.com')
+  .command('install', 'install module dari gblkpm')
   .argument('[module]', 'module yang akan di install', prog.STRING, prog.REQUIRED)
   .option("-o", "Project working directory path")
   .action(function(args, opt) {
     const [nama_module, versi] = args.module.split(":")
     utility.installModule(nama_module, versi, opt.o)
   })
-  .command('login', 'login akun dari https://gblkpm.herokuapp.com')
+  .command('login', 'login akun dari gblkpm')
   .action(function(args, opt) {
     akunManager.loginInput()
   })
-  .command('register', 'register akun ke https://gblkpm.herokuapp.com')
+  .command('register', 'register akun ke gblkpm')
   .action(function(args, opt) {
     akunManager.registerAkun()
   })
-  .command('publish', 'upload module ke https://gblkpm.herokuapp.com')
+  .command('publish', 'upload module ke gblkpm')
   .argument('[direktori]', 'Project working directory path')
   .action(function(args, opt) {
     utility.publishModule(args.direktori)

@@ -14,12 +14,6 @@ if (hasil.error) console.log(hasil.error.toString());
 //const skrip = `print("Hello world")`
 //runTerminal(skrip, "./indeks.gblk", {runArgs: {"timeout": 1000}}).then(console.log).catch(console.error)
 
-
-//const tcc = require('node-tinycc');
-// create a code generator
-//let gen = tcc.CodeGenerator();
-
-
 /* cek jumlah baris
 const fs = require("fs");
 const pt = require("path")

@@ -111,8 +111,8 @@ Run command `gblok run <filepath>`
 <br>
 
 ## Package Manager (beta)  
-[https://gblkpm.herokuapp.com/](https://gblkpm.herokuapp.com/)  
-Create account to publish packages
+[https://package.gblk.ga/](https://package.gblk.ga/)  
+Register an account, publish packages
 
 <br>
 

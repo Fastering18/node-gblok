@@ -23,9 +23,9 @@ function saveCacheData(dt = {}) {
     return true
 }
 
-function loginPost(email, password) {
+function loginPost(email, password, baseURL=enumItems.PKGManager.baseURL) {
     return new Promise((y, gk) => {
-        axios.post(`${enumItems.PKGManager.baseURL}${enumItems.PKGManager.loginURL}`, {
+        axios.post(`${baseURL}${enumItems.PKGManager.loginURL}`, {
             email, password
         }, { headers: { "content-type": "application/json" } }).then(d => {
             y(d.data)
