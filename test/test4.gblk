@@ -11,10 +11,19 @@ fungsi b()
 tutup
 
 --[[
-  lokal Lexer = (proses->binding)("../src/lexer.js")
-lokal res = (Lexer->Lexer)("sos", "print")
-print(res)
+     lokal Lexer = (proses->binding)("../src/lexer.js")
+     lokal res = (Lexer->Lexer)("sos", "print")
+     print(res)
 ]]
 
-lokal res = (proses->binding)("../regexp")
-print(res->DigitString)
+-- test closures
+print(((b())())())
+
+-- test js binding
+tunggu(300)
+lokal res = (proses->binding)("../package.json")
+print(res->version)
+
+lokal arr = [1,2,3,4]
+arr[2] = nil
+print(arr)

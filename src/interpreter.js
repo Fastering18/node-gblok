@@ -8,15 +8,7 @@ const {
     Konteks,
     TabelSimbol
 } = require("../lib/Runtime");
-const {
-    Angka,
-    Str,
-    BooLean,
-    Daftar,
-    Fungsi,
-    Nil,
-    Objek
-} = require("../lib/TipeData");
+
 const {
     TokenInteger,
     TokenFloat,
@@ -192,7 +184,16 @@ class Interpreter {
             var isiBaru = res.daftar(this.kunjungi(node.editIndeks, konteks))
             if (res.harus_return()) return res;
 
-            isi_untuk_diindeks.nilai[kunciIndeks instanceof Angka ? kunciIndeks.nilai : kunciIndeks.value] = isiBaru; //isi_untuk_diindeks.nilai[node.interp_indeks? (kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai) : kunciIndeks.value] = isiBaru;
+            if (isiBaru instanceof Nil) {
+                if (isi_untuk_diindeks instanceof Daftar) {
+                    isi_untuk_diindeks.nilai.splice(kunciIndeks.nilai || kunciIndeks.value, 1)
+                    return res.berhasil(Angka.nil)
+                } else {
+                    isi_untuk_diindeks.nilai[kunciIndeks.nilai || kunciIndeks.value] = undefined
+                    return res.berhasil(Angka.nil)
+                }
+            }
+            isi_untuk_diindeks.nilai[kunciIndeks.nilai || kunciIndeks.value] = isiBaru; //isi_untuk_diindeks.nilai[node.interp_indeks? (kunciIndeks.constructor.name == "Angka" ? kunciIndeks.nilai - 1 : kunciIndeks.nilai) : kunciIndeks.value] = isiBaru;
             return res.berhasil(isiBaru || Angka.nil)
         } else {
             //if (isi_untuk_diindeks.constructor.name == "Daftar") {
@@ -581,6 +582,16 @@ class Interpreter {
         return new HasilRuntime().berhasil_break()
     }
 }
+
+const {
+    Angka,
+    Str,
+    BooLean,
+    Daftar,
+    Fungsi,
+    Nil,
+    Objek
+} = require("../lib/TipeData");
 
 
 module.exports = {

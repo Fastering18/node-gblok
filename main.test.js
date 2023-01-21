@@ -1,14 +1,44 @@
-const { inspect } = require("util")
 const { Lexer } = require("./src/lexer")
 const { Parser } = require("./src/parser")
 const { Interpreter, TabelSimbol, Konteks } = require("./src/interpreter")
 const { BooLean } = require("./lib/TipeData")
 const { executeFileSync, executeSync, runTerminal } = require("./main")
 const { downloadModule } = require("./cmd/projek")
-//const glfw = require('glfw-raub');
+const utility = require("./cmd/utility");
 
-var hasil = executeFileSync("./test/index.gblk")
-if (hasil.error) console.log(hasil.error.toString());
+const fs = require("fs")
+const path = require("path")
+const chalk = require("chalk")
+const { inspect } = require("util")
+
+const TESTFOLDER = "./test"
+//const glfw = require('glfw-raub');
+//var hasil = executeFileSync("./test/index.gblk")
+//if (hasil.error) console.log(hasil.error.toString());
+
+var testResults = []
+
+fs.readdir(TESTFOLDER, (err, files) => {
+    if (err) return;
+    console.log(files)
+
+    files.forEach(file => {
+        var filepath = path.resolve(TESTFOLDER, file)
+        var projek = utility.getPackageFromDirectory(filepath);
+        var hasil = executeFileSync(projek ? path.join(projek.lokasi, "..", projek.script) : filepath)
+        if (hasil.error) console.log(hasil.error.toString());
+        testResults.push({ filepath, hasil })
+    })
+
+    console.log("========= TEST =========")
+    testResults.forEach((test, i) => {
+        console.log(i + 1 + ".", test.filepath, "\t", test.hasil.error ? chalk.red("Fail ❌") : chalk.green("Success ✔️"))
+    })
+
+});
+
+
+
 
 //executeSync("print('hai')", "ae.gblk")
 //const skrip = `print("Hello world")`

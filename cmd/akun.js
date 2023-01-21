@@ -32,7 +32,7 @@ function loginPost(email, password, baseURL=enumItems.PKGManager.baseURL) {
         }).catch(err => {
             //console.log(err.response.data)
             if (err.code === "ENOTFOUND") return gk({ status: "unknown", message: "Failed to login, check your connection and try again" })
-            gk(err.response.data)
+            gk(err)
         })
     })
 }
@@ -61,13 +61,13 @@ module.exports.loginInput = function (rinput = readline.createInterface({
             const dotAnim = setInterval(() => spinner.text = spinner.text.length >= 16 ? "Logining" : spinner.text.length >= 15 ? "Logining..." : spinner.text.length >= 14 ? "Logining.." : "Logining.", 200)
             loginPost(email, password).then(d => {
                 clearInterval(dotAnim)
-                spinner.succeed(`[${d.status}] Success logined as ${chalk.green.bold(d.data.username)} ✨`)
+                spinner.succeed(`[${d.status || '200'}] Success logined as ${chalk.green.bold(d.data.username)} ✨`)
 
                 console.log(d.data)
                 saveCacheData({ api_key: d.data.api_key, username: d.data.username })
             }).catch(err => {
                 clearInterval(dotAnim)
-                spinner.fail(`[${err.status}] ${err.message} ☹️`)
+                spinner.fail(`[${err.status || 'ERROR'}] ${err.message} ☹️`)
             }).finally(() => {
                 if (spinner.isSpinning) setTimeout(() => { clearInterval(dotAnim); spinner.succeed(`Success created ${chalk.blue.bold(nama_projek || pth || "example")} project`) }, 100);
                 if (rinput) rinput.close();

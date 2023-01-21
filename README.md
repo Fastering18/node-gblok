@@ -1,16 +1,16 @@
 <div align="center">
 <p>
 <h2>GBLK language written in Node.js</h2>
-<img src="https://cdn.discordapp.com/attachments/783614662960349236/882809593963634698/android-chrome-192x192.png" alt="gblk-icon">
+<img src="https://cdn.discordapp.com/attachments/783614662960349236/1063889772269023324/IMG_20230115_014020.jpg" width="225px" height="225px" alt="gblk-icon">
 </p>
 <p>
 <a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/travis/Fastering18/Membuat-Bahasa-Pemrograman/main?label=test" alt="travisci-test"></a> 
 <a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/npm/dt/node-gblk.svg?maxAge=3600" alt="npm-download"></a>
 <a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/npm/v/node-gblk.svg?maxAge=3600&label=versi" alt="npm-versi"></a>
-<a href="https://gblkpm.herokuapp.com"><img alt="Website" src="https://img.shields.io/website?maxAge=3600&down_message=Down&label=package%20manager&up_message=Aktif&url=https%3A%2F%2Fgblkpm.herokuapp.com"></a>
+<a href="https://gblkpm.herokuapp.com"><img alt="Website" src="https://img.shields.io/website?maxAge=3600&down_message=Down&label=package%20manager&up_message=Aktif&url=https://gbpm.fastering181.repl.co"></a>
 </p> 
 
-<p>GBLK language is interpreted language written in node.js<br><a href="https://gblk-lang.glitch.me/">Online interpreter</a> &nbsp;| &nbsp;<a href="https://fastering18.github.io/node-gblok/#/">Get started</a></p>
+<p>GBLK language is interpreted language written in node.js<br><a href="https://fastering18.github.io/node-gblok/#/">Get started</a> &nbsp;| &nbsp;<a href="https://gblk-gak.fastering181.repl.co/">Homepage</a> &nbsp;| &nbsp;<a href="https://gblk-lang.glitch.me/">Online interpreter</a></p>
 </div>
 
 > **🚨 We're currently working on gblk edition-2 as compiled language!  
@@ -81,9 +81,11 @@ print(obj)
 ## API  
 ```js
 const gblk = require("node-gblk")
-
 const skrip = `print("Hello world")`
-gblk.runTerminal(skrip, "./indeks.gblk").then(console.log)
+
+gblk
+.runTerminal(skrip, "./indeks.gblk")
+.then(console.log)
 ```  
 
 <br/>
@@ -111,7 +113,7 @@ Run command `gblok run <filepath>`
 <br>
 
 ## Package Manager (beta)  
-[https://package.gblk.ga/](https://package.gblk.ga/)  
+[https://gbpm.fastering181.repl.co](https://gbpm.fastering181.repl.co)  
 Register an account, publish packages
 
 <br>
