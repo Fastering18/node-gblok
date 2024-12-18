@@ -1,7 +1,7 @@
 <div align="center">
 <p>
 <h2>GBLK language written in Node.js</h2>
-<img src="https://cdn.discordapp.com/attachments/783614662960349236/1063889772269023324/IMG_20230115_014020.jpg" width="225px" height="225px" alt="gblk-icon">
+<img src="https://github.com/Fastering18//node-gblok/blob/master/docs/gblk_icon1.jpg?raw=true" width="225px" height="225px" alt="gblk-icon">
 </p>
 <p>
 <a href="https://www.npmjs.com/package/node-gblk"><img src="https://img.shields.io/travis/Fastering18/Membuat-Bahasa-Pemrograman/main?label=test" alt="travisci-test"></a> 
